@@ -3,19 +3,25 @@ from . import interfaces as core_interfaces
 from .dl import deeplearning as dl
 from .ml import machinelearning as ml
 from ..preprocessing import preproc
-
+from ..aop import aop
 
 class Context:
 
     def __init__(self, strategy: core_interfaces.AnalyzerStrategy) -> None:
         self._strategy = strategy
 
+        #Init aspect
+        self.analyzer_aspect = aop.AnalyzerAspect()
+
     def strategy(self) -> core_interfaces.AnalyzerStrategy:
         return self._strategy
 
     def analyze(self, preprocessed: preproc.PreprocResults):
-        self._strategy.analyze(preprocessed)
 
+        # Apply aspect
+        self.analyzer_aspect.apply(self._strategy)
+
+        self._strategy.analyze(preprocessed)
 
 class Core:
     __instance = None
