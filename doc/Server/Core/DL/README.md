@@ -3,7 +3,7 @@
 
 The overall workflow in this component is defined as follows:
 
-![Alt Text](Design/cnn_overview.png)
+![Alt Text](cnn_overview.png)
 
 Here's an in depth look over the above modules
 
@@ -13,7 +13,7 @@ CommunicationManager is the class responsible for establishing server functional
 will receive messages, validate them, and even modify the input if needed before sending it further to
 the ProcessHandler
 
-![Alt Text](Design/comm_manager.png)
+![Alt Text](comm_manager.png)
 
 ### Members
 
@@ -27,7 +27,7 @@ The ```ConnectionManager``` will have a chain of interceptors that it will apply
 The ```RequestManager``` class handles the processing queue, specifically usefull for bulk processing in case of large inputs.
 Given a ```Worker``` implementation, the request manage will process each request while recording metrics for benchmarking purposes.
 
-![Alt Text](Design/process_handler.png)
+![Alt Text](process_handler.png)
 
 ### Members
 
@@ -43,4 +43,4 @@ Once a metrics object is destroyed or the ```write_metrics``` function is called
 The convolutional neural network is the actual detection algorithm used by this module. For this specific module,
 we are using the approach described [here](https://arxiv.org/pdf/1802.09957.pdf).
 
-![Alt Text](Design/cnn.png)
+![Alt Text](cnn.png)
