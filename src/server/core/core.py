@@ -34,9 +34,15 @@ class Core:
 
     @staticmethod
     def analyze(preprocessed):
-        context = Context(ml.MachineLearning())
-        # context = Context(dl.DeepLearning())
-        context.analyze(preprocessed)
+        try:
+            context = Context(ml.MachineLearning())
+            # context = Context(dl.DeepLearning())
+
+            context.analyze(preprocessed)
+        except core_exceptions.UninitializedException as e:
+            print("Failed to initialize analyzing module: %s" % e)
+        except core_exceptions.DetectionFailedException as e:
+            print("Failed to run detection logic: %s" % e)
 
 
 if __name__ == "__main__":

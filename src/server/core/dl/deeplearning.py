@@ -1,15 +1,19 @@
+from src.server.core.dl.cnn.executors.default_execution import DefaultExecution
 from .. import exceptions as core_exceptions
 from .. import interfaces as core_interfaces
 
 
 class DeepLearning(core_interfaces.AnalyzerStrategy):
+    _execution_strategy = None
+
     def __init__(self):
-        pass
+        self._execution_strategy = DefaultExecution()
+        self._train("")
 
     def analyze(self, preprocessed) -> [int]:
-        pass
+        return self._execution_strategy.execute()
 
-    def train(self, input_directory):
+    def _train(self, input_directory):
         """
         Trains the CNN with the given input files
         :param input_directory: directory with one or more CSV files used as input data
