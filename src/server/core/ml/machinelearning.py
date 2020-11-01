@@ -1,12 +1,12 @@
 from .. import exceptions as core_exceptions
-from .. import interfaces
+from .. import interfaces as core_interfaces
 
-class MachineLearning(interfaces.AnalyzerInterface):
+class MachineLearning(core_interfaces.AnalyzerStrategy):
     def __init__(self):
         pass
 
     def analyze(self, preprocessed) -> [int]:
-        pass
+        print("MachineLearning: " + preprocessed)
 
 if __name__ == "__main__":
 
