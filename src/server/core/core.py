@@ -26,20 +26,29 @@ class Context:
 class Core:
     __instance = None
 
-    def get_instance(self):
-        if Core.__instance == None:
+    @staticmethod
+    def get_instance():
+        if Core.__instance is None:
             Core()
         return Core.__instance
 
     def __init__(self):
-        if Core.__instance != None:
+        if Core.__instance is not None:
             raise core_exceptions.SingletonException()
         else:
             Core.__instance = self
 
-    def analyze(self, preprocessed):
-        context = Context(ml.MachineLearning())
-        context.analyze(preprocessed)
+    @staticmethod
+    def analyze(preprocessed):
+        try:
+            context = Context(ml.MachineLearning())
+            # context = Context(dl.DeepLearning())
+
+            context.analyze(preprocessed)
+        except core_exceptions.UninitializedException as e:
+            print("Failed to initialize analyzing module: %s" % e)
+        except core_exceptions.DetectionFailedException as e:
+            print("Failed to run detection logic: %s" % e)
 
 
 if __name__ == "__main__":

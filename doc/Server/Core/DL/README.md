@@ -44,3 +44,7 @@ The convolutional neural network is the actual detection algorithm used by this 
 we are using the approach described [here](https://arxiv.org/pdf/1802.09957.pdf).
 
 ![Alt Text](cnn.png)
+
+For a more detailed implementation, see the following class diagram
+
+![Alt Text](cnn_refactor.png)
