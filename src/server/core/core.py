@@ -20,19 +20,22 @@ class Context:
 class Core:
     __instance = None
 
-    def get_instance(self):
-        if Core.__instance == None:
+    @staticmethod
+    def get_instance():
+        if Core.__instance is None:
             Core()
         return Core.__instance
 
     def __init__(self):
-        if Core.__instance != None:
+        if Core.__instance is not None:
             raise core_exceptions.SingletonException()
         else:
             Core.__instance = self
 
-    def analyze(self, preprocessed):
+    @staticmethod
+    def analyze(preprocessed):
         context = Context(ml.MachineLearning())
+        # context = Context(dl.DeepLearning())
         context.analyze(preprocessed)
 
 
