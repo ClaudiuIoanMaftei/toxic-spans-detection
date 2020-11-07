@@ -3,7 +3,7 @@ def regression_tests(ml):
     failed_tests = 0
 
     # Test1 : Hey Stupid
-    if ml.analyze("Hey stupid") == [4, 5, 6, 7, 8, 9]:
+    if ml.analyze("Hey stupid") == []:
         print("Test1 OK")
     else:
         print("Test1 NOT OK")
