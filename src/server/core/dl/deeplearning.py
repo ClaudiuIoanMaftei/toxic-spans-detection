@@ -1,4 +1,4 @@
-from src.server.core.dl.cnn.executors.default_execution import DefaultExecution
+from .cnn.executors import default_execution as DefaultExecution
 from .. import exceptions as core_exceptions
 from .. import interfaces as core_interfaces
 

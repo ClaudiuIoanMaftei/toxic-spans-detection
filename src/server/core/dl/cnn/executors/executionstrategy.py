@@ -1,5 +1,5 @@
-from src.server.core.dl.cnn.executors.executionchain import ExecutionChain
-from src.server.core.exceptions.uninitializedexception import UninitializedException
+from .executionchain import ExecutionChain
+from ....exceptions import UninitializedException
 
 
 class ExecutionStrategy:
