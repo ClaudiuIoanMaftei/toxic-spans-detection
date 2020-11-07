@@ -20,5 +20,5 @@ if __name__ == "__main__":
     print("MachineLearning")
 
     if len(sys.argv) > 1 and sys.argv[1] == "test":
-        unittests.test(ml)
+        quit(unittests.test(ml))
 
