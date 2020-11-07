@@ -1,0 +1,62 @@
+name: Test
+
+on: push
+
+jobs:
+  testing_modules:
+    name: Testing Modules
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: List python files
+      working-directory: src
+      run: find . -name "*.py"
+
+    - name: Setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install python depedencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Server
+      if: always()
+      working-directory: src
+      run: python -m server.server test
+
+    - name: Preprocessing
+      if: always()
+      working-directory: src
+      run: python -m server.preprocessing.preproc test
+
+    - name: Core
+      if: always()
+      working-directory: src
+      run: python -m server.core.core test
+
+    - name: Machine Learning
+      if: always()
+      working-directory: src
+      run: python -m server.core.ml.machinelearning test
+
+    - name: Deep Learning
+      if: always()
+      working-directory: src
+      run: python -m server.core.dl.deeplearning test
+
+    - name: Postprocessing
+      if: always()
+      working-directory: src
+      run: python -m server.postprocessing.postproc test
+
+
+
+
+
+
