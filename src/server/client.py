@@ -19,6 +19,7 @@ class Client:
                 
     def executeSend(self):
         asyncio.get_event_loop().run_until_complete(self.sendRequest())
+        return True
 
 
 if __name__ == "__main__":
