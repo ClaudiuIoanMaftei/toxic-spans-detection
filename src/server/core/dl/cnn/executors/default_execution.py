@@ -1,4 +1,4 @@
-from src.server.core.dl.cnn.executors.executionstrategy import ExecutionStrategy
+from .executionstrategy import ExecutionStrategy
 
 
 class DefaultExecution(ExecutionStrategy):

@@ -5,6 +5,10 @@ The overall workflow in this component is defined as follows:
 
 ![Alt Text](cnn_overview.png)
 
+The BPMN diagram of the module
+
+![Alt Text](dl_bpmn.png)
+
 Here's an in depth look over the above modules
 
 ## CommunicationManager

@@ -1,0 +1,3 @@
+pytilities~=1.2.0
+pytest~=6.1.2
+nltk~=3.5
