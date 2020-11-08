@@ -7,10 +7,8 @@ class ExecutionStrategy:
     Abstract class for creating, training and adjusting an execution chain.
     """
 
-    _execution_chain = None
-
     def __init__(self):
-        _execution_chain = ExecutionChain()
+        self._execution_chain = ExecutionChain()
 
     def init(self, **kwargs):
         """
