@@ -8,8 +8,8 @@ class Vocabulary:
 
     @staticmethod
     def create(string):
-        # Creates a new vocabulary using string splitting
-        pass
+        # Creates a new vocabulary using string splitting, used for debugging
+        return Vocabulary(string.split())
 
     def get_tokens(self):
         return self._tokens
