@@ -18,9 +18,11 @@ class Client:
 #                 # print("data received from server : " + data_rcv)
                 
     def executeSend(self):
-        asyncio.get_event_loop().run_until_complete(self.sendRequest())
-        return True
-
+        try:
+            asyncio.get_event_loop().run_until_complete(self.sendRequest())
+            return True
+        except:
+            return False
 
 if __name__ == "__main__":
     print("Client")

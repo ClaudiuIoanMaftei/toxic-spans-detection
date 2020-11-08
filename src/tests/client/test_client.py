@@ -10,9 +10,7 @@ from src.server import server
 class TestClient():
 
     cl = client.Client()
-    sv = server.Server()
 
     def test_client_executeSend(self):
-        TestClient.sv.start()
-        TestClient.sv.run()
-        assert TestClient.cl.executeSend() == True
+        # No connection yet
+        assert TestClient.cl.executeSend() == False
