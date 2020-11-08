@@ -1,6 +1,6 @@
+from src.server.postprocessing import PostProcessor
 from .core import core
 from .preprocessing import preproc
-from .postprocessing import postproc
 
 class WebSocket:
 
@@ -37,7 +37,7 @@ class Server:
 
         self.core = core.Core()
         self.preproc = preproc.Preprocessor()
-        self.postproc = postproc.Postprocessor()
+        self.postproc = PostProcessor()
     
     def start(self):
         # Starting up the server
