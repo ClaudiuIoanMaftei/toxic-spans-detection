@@ -2,12 +2,29 @@ from .. import exceptions as core_exceptions
 from .. import interfaces as core_interfaces
 from . import tokenizer
 
-import sys
 import nltk
 from nltk.corpus import sentiwordnet as swn
 
 
 class SentiWordNet:
+
+    __instance = None
+
+    @staticmethod
+    def get_instance():
+        if SentiWordNet.__instance is None:
+            SentiWordNet()
+        return SentiWordNet.__instance
+
+    def __init__(self):
+        if SentiWordNet.__instance is not None:
+            raise core_exceptions.SingletonException
+        else:
+            try:
+                nltk.data.find('corpora/sentiwordnet.zip/sentiwordnet/')
+            except:
+                nltk.download('sentiwordnet')
+            SentiWordNet.__instance = self
 
     def query(self, word):
         results = list(swn.senti_synsets(word))
@@ -27,8 +44,6 @@ class SentiWordNet:
             return 0
 
 
-
-
 class MachineLearning(core_interfaces.AnalyzerStrategy):
     def __init__(self):
         pass
@@ -37,10 +52,10 @@ class MachineLearning(core_interfaces.AnalyzerStrategy):
 
         output = []
         tokens = tokenizer.tokenize(preprocessed)
-        senti = SentiWordNet()
+        senti = SentiWordNet.get_instance()
 
         for token in tokens:
-            if(senti.query(token) > 0.1):
+            if senti.query(token) > 0.1:
                 start = preprocessed.find(token)
                 end = start + len(token)
                 for i in range(start, end):
@@ -52,14 +67,3 @@ if __name__ == "__main__":
 
     ml = MachineLearning()
     print("MachineLearning")
-
-    if len(sys.argv) > 1:
-        if sys.argv[1] == "setup":
-            nltk.download('sentiwordnet')
-    else:
-        senti = SentiWordNet()
-        print(senti.query("stupid"))
-
-
-
-
