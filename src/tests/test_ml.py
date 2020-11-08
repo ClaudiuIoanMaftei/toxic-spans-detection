@@ -2,6 +2,7 @@ from ..server.core.ml import machinelearning as ml
 
 import pytest
 
+
 @pytest.fixture()
 def machine_learning():
     return ml.MachineLearning()

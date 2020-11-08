@@ -1,5 +1,5 @@
 from .executionchain import ExecutionChain
-from ....exceptions import UninitializedException
+from ....exceptions import DetectionFailedException
 
 
 class ExecutionStrategy:
@@ -7,10 +7,8 @@ class ExecutionStrategy:
     Abstract class for creating, training and adjusting an execution chain.
     """
 
-    _execution_chain = None
-
     def __init__(self):
-        _execution_chain = ExecutionChain()
+        self._execution_chain = ExecutionChain()
 
     def init(self, **kwargs):
         """
@@ -24,4 +22,7 @@ class ExecutionStrategy:
         try:
             self._execution_chain.execute()
         except Exception as e:  # Use internal DL exceptions when ready
-            raise UninitializedException(e)
+            raise DetectionFailedException(e)
+
+    def get_execution_data(self):
+        return self._execution_chain.get_execution_metrics()

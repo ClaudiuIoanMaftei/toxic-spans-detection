@@ -1,4 +1,4 @@
-from .cnn.executors import default_execution as DefaultExecution
+from src.server.core.dl.cnn.executors.default_execution import DefaultExecution
 from .. import exceptions as core_exceptions
 from .. import interfaces as core_interfaces
 
@@ -11,7 +11,7 @@ class DeepLearning(core_interfaces.AnalyzerStrategy):
         self._train("")
 
     def analyze(self, preprocessed) -> [int]:
-        return self._execution_strategy.execute()
+        return None
 
     def _train(self, input_directory):
         """
