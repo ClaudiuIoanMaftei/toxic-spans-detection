@@ -11,7 +11,7 @@ class DeepLearning(core_interfaces.AnalyzerStrategy):
         self._train("")
 
     def analyze(self, preprocessed) -> [int]:
-        return self._execution_strategy.execute()
+        return None
 
     def _train(self, input_directory):
         """

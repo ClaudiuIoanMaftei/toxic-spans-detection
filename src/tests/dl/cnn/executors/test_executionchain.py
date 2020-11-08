@@ -7,8 +7,9 @@ class HandlerMock:
     def __init__(self):
         print("Mock Handler created")
 
-    def execute(self, **kwargs):
+    def execute(self, kwargs):
         print("Executed mock handler with args: " + str(kwargs))
+        return kwargs
 
 
 class OutputFilterMock:
@@ -34,44 +35,44 @@ fnn_args = {'kern_x': 1, 'kern_y': 1, 'lf': 1.2, 'w': 2}
 class TestExecutionStrategy(ExecutionStrategy):
 
     def init(self, **kwargs):
-        self._execution_chain.entry_point(handler_mock, **convolutional_args1)
+        self._execution_chain.entry_point(handler_mock, convolutional_args1)
 
-        self._execution_chain.add_layer(handler_mock, 2, convolutional_args2)
-        self._execution_chain.add_layer(handler_mock, 1, polling_args)
-        self._execution_chain.add_layer(handler_mock, 3, convolutional_args3)
-        self._execution_chain.add_layer(handler_mock, 3, polling_args)
+        self._execution_chain.add_layer(handler_mock, 2, True, convolutional_args2)
+        self._execution_chain.add_layer(handler_mock, 1, True, polling_args)
+        self._execution_chain.add_layer(handler_mock, 3, True, convolutional_args3)
+        self._execution_chain.add_layer(handler_mock, 3, True, polling_args)
 
         self._execution_chain.output_filter(output_filter_mock)
 
 
 def test_add_methods():
     executor = TestExecutionStrategy()
+    executor.init()
     executor.execute()
 
     print("Executed test chain.")
     execution_data = executor.get_execution_data()
+    print(execution_data)
 
+    # CNN layers may adjust arguments between repetitions, so we cannot test the arguments
     assert(execution_data[0]["handler"] == handler_mock)
     assert(execution_data[0]["times"] == 1)
-    assert(execution_data[0]["args"] == convolutional_args1)
     assert("time" in execution_data[0])
 
     assert (execution_data[1]["handler"] == handler_mock)
     assert (execution_data[1]["times"] == 2)
-    assert (execution_data[1]["args"] == convolutional_args2)
-    assert ("time" in execution_data[0])
-
-    assert (execution_data[1]["handler"] == handler_mock)
-    assert (execution_data[1]["times"] == 1)
-    assert (execution_data[1]["args"] == polling_args)
-    assert ("time" in execution_data[0])
+    assert ("time" in execution_data[1])
 
     assert (execution_data[2]["handler"] == handler_mock)
-    assert (execution_data[2]["times"] == 3)
-    assert (execution_data[2]["args"] == convolutional_args3)
-    assert ("time" in execution_data[0])
+    assert (execution_data[2]["times"] == 1)
+    assert (execution_data[2]["args"] == polling_args)
+    assert ("time" in execution_data[2])
 
     assert (execution_data[3]["handler"] == handler_mock)
     assert (execution_data[3]["times"] == 3)
-    assert (execution_data[3]["args"] == polling_args)
-    assert ("time" in execution_data[0])
+    assert ("time" in execution_data[3])
+
+    assert (execution_data[4]["handler"] == handler_mock)
+    assert (execution_data[4]["times"] == 3)
+    assert (execution_data[4]["args"] == polling_args)
+    assert ("time" in execution_data[4])
