@@ -1,4 +1,6 @@
 import pytest
+import asyncio
+import websockets
 
 from src.server import client
 

@@ -1,3 +1,7 @@
+import signal
+import asyncio
+import websockets
+
 from .core import core
 from .preprocessing import preproc
 from .postprocessing import postproc
@@ -7,27 +11,30 @@ class WebSocket:
     def __init__(self, addr="localhost", port=8000):
         self.addr = addr
         self.port = port
+        self.x = ''
 
-    def bind(self):
-        pass
+    def bind(self, action):
+        self.x = websockets.serve(action, self.addr, self.port)
+        print(type(self.x))
 
 class RequestHandler:
     # Is instantiated by client request
     def __init__(self, req):
         self.thread_no = 'current_thread'
-        self.data = 'getting_data_from_request'
+        self.data = req
         self.core_results = []
-        self.response ='response'
+        self.response ='default'
 
     def getCoreResults(self):
-        pass
+        self.core_results = ['htfefahfdha', 'dsfsadgadeh']
+        return self.core_results
 
     def handle(self):
         """
         Actual execution logic
         input -> preproc -> core (dl/ml) -> postproc -> response
         """
-        pass
+        self.response = "Final"
 
 class Server:
 
@@ -46,38 +53,53 @@ class Server:
         # Starting up the server
         print("Starting server")
         self.is_up = True
-        self.sock.bind()
 
     def run(self):
         # Server is running, applying requests
-        while self.is_up:
-            self.handleRequest()
-            break
+        print("Running server")
+        try:
+            self.sock.bind(self.handleRequest)
+            asyncio.get_event_loop().run_until_complete(self.sock.x)
+            # asyncio.get_event_loop().run_forever()
+            return True
+        except:
+            return False
     
     def shutdown(self):
         # Server is shutting down
         self.is_up = False
 
-    def handleRequest(self):
+    async def handleRequest(self):
         # Handles requests
-        req = self.getRequest()
-        if self.verifyRequest(req):
-            self.processRequest(req)
+        while self.is_up:
+            received_data = self.getRequest()
+            print("[Server][Received]: " + received_data)
+            if self.verifyRequest(received_data):
+                self.processRequest(received_data)
 
-    def getRequest(self):
+    async def getRequest(self):
         # Getting web client request
-        request = ''
-        return request
+        received_data = await websocket.recv()
+        return received_data
 
     def verifyRequest(self, req):
         # Verifies request's validity to proceed further
-        pass
+        min_size = 5
+        max_size = 500
+        if (len(req) < min_size) or (len(req) > max_size):
+            return False
+        else:
+            return True
 
     def processRequest(self, req):
         # Instantiates request handler that processes/executes the request
-        req_handler = RequestHandler(req)
-        self.queue.append(req_handler)
-        req_handler.handle()
+        try:
+            req_handler = RequestHandler(req)
+            self.queue.append(req_handler)
+            req_handler.handle()
+            return True
+        except:
+            return False
 
 if __name__ == "__main__":
     print("Server")
