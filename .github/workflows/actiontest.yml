@@ -25,35 +25,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Server
+    - name: Testing
       if: always()
       working-directory: src
-      run: python -m server.server test
+      run: pytest
 
-    - name: Preprocessing
-      if: always()
-      working-directory: src
-      run: python -m server.preprocessing.preproc test
-
-    - name: Core
-      if: always()
-      working-directory: src
-      run: python -m server.core.core test
-
-    - name: Machine Learning
-      if: always()
-      working-directory: src
-      run: python -m server.core.ml.machinelearning test
-
-    - name: Deep Learning
-      if: always()
-      working-directory: src
-      run: python -m server.core.dl.deeplearning test
-
-    - name: Postprocessing
-      if: always()
-      working-directory: src
-      run: python -m server.postprocessing.postproc test
 
 
 
