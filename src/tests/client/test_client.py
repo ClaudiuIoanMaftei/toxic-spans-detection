@@ -10,5 +10,6 @@ class TestClient():
 
     cl = client.Client()
 
-    def test_client_sendRequest(self):
-        assert TestClient.cl.sendRequest() == True
+    def test_client_executeSend(self):
+        with pytest.raises(ConnectionRefusedError):
+            TestClient.cl.executeSend()
