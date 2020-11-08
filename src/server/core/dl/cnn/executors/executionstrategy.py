@@ -1,5 +1,5 @@
 from .executionchain import ExecutionChain
-from ....exceptions import UninitializedException
+from ....exceptions import DetectionFailedException
 
 
 class ExecutionStrategy:
@@ -22,4 +22,7 @@ class ExecutionStrategy:
         try:
             self._execution_chain.execute()
         except Exception as e:  # Use internal DL exceptions when ready
-            raise UninitializedException(e)
+            raise DetectionFailedException(e)
+
+    def get_execution_data(self):
+        return self._execution_chain.get_execution_metrics()

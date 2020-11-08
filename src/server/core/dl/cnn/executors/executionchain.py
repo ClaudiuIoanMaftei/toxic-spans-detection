@@ -6,6 +6,26 @@ class ExecutionChain:
     forwarding the result from one layer to another
     """
 
+    """
+    Entry point handler
+    """
+    _entry_point = None
+
+    """
+    Execution chain, a tuple array containing the handler and all the needed metadata to execute it
+    """
+    _chain = []
+
+    """
+    Output filter to parse the chain execution result
+    """
+    _output_filter = None
+
+    """
+    Member used to record the last execution, with whatever data is needed
+    """
+    _last_execution_metrics = None
+
     def __init__(self):
         pass
 
@@ -46,3 +66,10 @@ class ExecutionChain:
         :return: the output of the last layer in the chain if there is no output filter, or it's result otherwise
         """
         pass
+
+    def get_execution_metrics(self):
+        """
+        Get the last execution data
+        :return: last execution stored information
+        """
+        return self._last_execution_metrics
