@@ -21,9 +21,13 @@ class SentiWordNet:
             raise core_exceptions.SingletonException
         else:
             try:
+                nltk.data.find('corpora/wordnet.zip/wordnet/')
                 nltk.data.find('corpora/sentiwordnet.zip/sentiwordnet/')
             except:
+                nltk.download('wordnet')
                 nltk.download('sentiwordnet')
+                print(nltk.data.find('corpora/wordnet.zip/wordnet/'))
+                print(nltk.data.find('corpora/sentiwordnet.zip/sentiwordnet/'))
             SentiWordNet.__instance = self
 
     def query(self, word):
