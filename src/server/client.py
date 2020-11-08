@@ -1,10 +1,13 @@
-from . import server.WebSocket
+from .server import WebSocket
 
 class Client:
 
     def __init__(self):
-        self.sock = server.WebSocket()
+        self.sock = WebSocket()
         self.requests = []
 
     def sendRequest(self):
         pass
+
+if __name__ == "__main__":
+    print("Client")

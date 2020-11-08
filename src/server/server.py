@@ -4,7 +4,7 @@ from .postprocessing import postproc
 
 class WebSocket:
 
-    def __init__(self, addr, port):
+    def __init__(self, addr="localhost", port=8000):
         self.addr = addr
         self.port = port
 
@@ -18,6 +18,9 @@ class RequestHandler:
         self.data = 'getting_data_from_request'
         self.core_results = []
         self.response ='response'
+
+    def getCoreResults(self):
+        pass
 
     def handle(self):
         """
@@ -49,12 +52,13 @@ class Server:
         # Server is running, applying requests
         while self.is_up:
             self.handleRequest()
+            break
     
     def shutdown(self):
         # Server is shutting down
         self.is_up = False
 
-    def handleRequest():
+    def handleRequest(self):
         # Handles requests
         req = self.getRequest()
         if self.verifyRequest(req):
@@ -62,7 +66,7 @@ class Server:
 
     def getRequest(self):
         # Getting web client request
-        request = 'bla'
+        request = ''
         return request
 
     def verifyRequest(self, req):
