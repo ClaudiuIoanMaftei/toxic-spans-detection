@@ -11,7 +11,7 @@ class Preprocessor:
     __corpus = None
     __tokens = None
 
-    def __init__(self, corpus):
+    def __init__(self, corpus=""):
         Preprocessor.__instance = self
         Preprocessor.__corpus = self
 

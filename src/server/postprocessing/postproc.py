@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 class Postprocessor:
-    def __init__(self, documents):
+    def __init__(self, documents=""):
         self.documents = documents
         pass
 
