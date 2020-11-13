@@ -6,7 +6,7 @@ import re, enchant
 # English dictionary
 en_US = None
 
-# Special characters inserted on preprocessing
+# Special characters inserted on preprocessor
 special_characters = [
     ("{space}", " "),
     ("{comma}", ","),
@@ -16,9 +16,9 @@ special_characters = [
 
 tags = ["name", "number", "email", "phone", "url", "phrase"]
 
-# Regexes used in preprocessing
+# Regexes used in preprocessor
 regexes = {
-    # preprocessing regexes
+    # preprocessor regexes
     "number": r"[0-9]+((\.|,)([0-9]+)+)+",
     "email": r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+",
     "phone": r"(\(?[0-9]{3,5}\)?)[\s]?([\-\/])?\s?([0-9-]{4,10})(?![0-9])",
@@ -195,12 +195,9 @@ def process_tokens(tokens):
 
 
 def tokenize(text):
-
     text = preprocessing(text)
     initial_tokens = text.split(" ")
     tokens = process_tokens(initial_tokens)
 
     return tokens
 ####################
-
-

@@ -1,4 +1,5 @@
-from abc import  abstractmethod
+from abc import abstractmethod
+
 
 # Document : int []
 # An array of indexes from analyzed text where Document[i] represents position of detected toxic span element.
