@@ -1,40 +1,30 @@
-import signal
-import asyncio
-import websockets
-
+from src.server.postprocessing import PostProcessor
 from .core import core
 from .preprocessing import preproc
-from .postprocessing import postproc
 
 class WebSocket:
 
-    def __init__(self, addr="localhost", port=8000):
+    def __init__(self, addr, port):
         self.addr = addr
         self.port = port
-        self.x = ''
 
-    def bind(self, action):
-        self.x = websockets.serve(action, self.addr, self.port)
-        print(type(self.x))
+    def bind(self):
+        pass
 
 class RequestHandler:
     # Is instantiated by client request
     def __init__(self, req):
         self.thread_no = 'current_thread'
-        self.data = req
+        self.data = 'getting_data_from_request'
         self.core_results = []
-        self.response ='default'
-
-    def getCoreResults(self):
-        self.core_results = ['htfefahfdha', 'dsfsadgadeh']
-        return self.core_results
+        self.response ='response'
 
     def handle(self):
         """
         Actual execution logic
         input -> preproc -> core (dl/ml) -> postproc -> response
         """
-        self.response = "Final"
+        pass
 
 class Server:
 
@@ -47,59 +37,43 @@ class Server:
 
         self.core = core.Core()
         self.preproc = preproc.Preprocessor()
-        self.postproc = postproc.Postprocessor()
+        self.postproc = PostProcessor()
     
     def start(self):
         # Starting up the server
         print("Starting server")
         self.is_up = True
+        self.sock.bind()
 
     def run(self):
         # Server is running, applying requests
-        print("Running server")
-        try:
-            self.sock.bind(self.handleRequest)
-            asyncio.get_event_loop().run_until_complete(self.sock.x)
-            # asyncio.get_event_loop().run_forever()
-            return True
-        except:
-            return False
+        while self.is_up:
+            self.handleRequest()
     
     def shutdown(self):
         # Server is shutting down
         self.is_up = False
 
-    async def handleRequest(self):
+    def handleRequest():
         # Handles requests
-        while self.is_up:
-            received_data = self.getRequest()
-            print("[Server][Received]: " + received_data)
-            if self.verifyRequest(received_data):
-                self.processRequest(received_data)
+        req = self.getRequest()
+        if self.verifyRequest(req):
+            self.processRequest(req)
 
-    async def getRequest(self):
+    def getRequest(self):
         # Getting web client request
-        received_data = await websocket.recv()
-        return received_data
+        request = 'bla'
+        return request
 
     def verifyRequest(self, req):
         # Verifies request's validity to proceed further
-        min_size = 5
-        max_size = 500
-        if (len(req) < min_size) or (len(req) > max_size):
-            return False
-        else:
-            return True
+        pass
 
     def processRequest(self, req):
         # Instantiates request handler that processes/executes the request
-        try:
-            req_handler = RequestHandler(req)
-            self.queue.append(req_handler)
-            req_handler.handle()
-            return True
-        except:
-            return False
+        req_handler = RequestHandler(req)
+        self.queue.append(req_handler)
+        req_handler.handle()
 
 if __name__ == "__main__":
     print("Server")
