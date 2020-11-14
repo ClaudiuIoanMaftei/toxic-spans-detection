@@ -1,11 +1,11 @@
-from src.server.core.dl import deeplearning as dl
+from src.server.core.dl import DeepLearning
 
 import pytest
 
 
 @pytest.fixture()
 def deeplearning():
-    return dl.DeepLearning()
+    return DeepLearning()
 
 
 def test_1(deeplearning):

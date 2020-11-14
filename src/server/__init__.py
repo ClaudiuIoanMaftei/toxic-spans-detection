@@ -4,7 +4,7 @@ from src.server.preprocessor import PreProcessor
 
 class WebSocket:
 
-    def __init__(self, addr, port):
+    def __init__(self, addr = None, port = None):
         self.addr = addr
         self.port = port
 

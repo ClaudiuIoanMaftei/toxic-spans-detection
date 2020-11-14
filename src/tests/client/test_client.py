@@ -2,14 +2,14 @@ import pytest
 import asyncio
 import websockets
 
-from src.server import client
-from src.server import server
+from src.server.client import Client
+from src.server import Server
 
 ### Client ###
 
 class TestClient():
 
-    cl = client.Client()
+    cl = Client()
 
     def test_client_executeSend(self):
         # No connection yet
