@@ -15,7 +15,6 @@ class Client:
         async with websockets.connect(self.conn_uri) as self.sock.x:
             for i in range(1, 100, 1):
                 await self.sock.x.send("[Client][Sent]: Hewwo")
-
     #                 # data_rcv = await self.sock.y.recv();
     #                 # print("data received from server : " + data_rcv)
 
