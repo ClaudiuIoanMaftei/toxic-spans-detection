@@ -9,6 +9,7 @@ class DetectionFailedException(Exception):
         self.message = message
         super().__init__(self.message)
 
+
 class UninitializedException(Exception):
     """Exception raised by the core modules for incomplete/incorrect initialization.
 
@@ -20,6 +21,7 @@ class UninitializedException(Exception):
         self.message = message
         super().__init__(self.message)
 
+
 class SingletonException(Exception):
     """Exception raised by the core modules for being singletone and already initialized.
 
@@ -30,4 +32,3 @@ class SingletonException(Exception):
     def __init__(self, message="Class is a singleton and already initialized"):
         self.message = message
         super().__init__(self.message)
-

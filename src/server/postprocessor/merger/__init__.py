@@ -1,4 +1,4 @@
-from src.server.postprocessing import PostProcessor
+from src.server.postprocessor import PostProcessor
 
 
 class Merger(PostProcessor):

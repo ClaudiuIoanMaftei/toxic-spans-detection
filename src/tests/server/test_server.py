@@ -1,12 +1,12 @@
 import pytest
 
-from src.server import server
+from src.server import Server, WebSocket, RequestHandler
 
 ### WebSocket ###
 
 class TestWebSocket():
 
-    ws = server.WebSocket()
+    ws = WebSocket()
 
     def test_websocket_bind(self):
         TestWebSocket.ws.bind(print())
@@ -16,7 +16,7 @@ class TestWebSocket():
 
 class TestServer():
 
-    sv = server.Server()
+    sv = Server()
 
     def test_server_start(self):
         TestServer.sv.start()
@@ -48,7 +48,7 @@ class TestServer():
 class TestRequestHandler():
 
     req = 'aaaaaaaaaaaaaaaaa'
-    rh = server.RequestHandler(req)
+    rh = RequestHandler(req)
 
     def test_requesthandler_getCoreResults(self):
         assert len(TestRequestHandler.rh.getCoreResults()) != 0

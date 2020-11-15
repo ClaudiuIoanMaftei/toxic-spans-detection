@@ -27,7 +27,6 @@ jobs:
 
     - name: Testing
       if: always()
-      working-directory: src
       run: pytest
 
 
