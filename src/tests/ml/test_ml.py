@@ -1,11 +1,11 @@
-from ..server.core.ml import machinelearning as ml
+from src.server.core.ml import MachineLearning
 
 import pytest
 
 
 @pytest.fixture()
 def machine_learning():
-    return ml.MachineLearning()
+    return MachineLearning()
 
 def test_1(machine_learning):
     assert machine_learning.analyze("") == []
