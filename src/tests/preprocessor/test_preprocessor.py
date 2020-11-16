@@ -4,17 +4,22 @@ import pytest
 
 @pytest.fixture()
 def preproc():
-    p=PreProcessor("This is a test about dogs.")
-    p.tokenize()
-    p.lemmatize()
-    p.generate_synonym_dictionary()
-    return p.generate_results()
+    return PreProcessor()
 
-def test_1(result):
-    assert "cat" in result.data["synonyms"]["dog"]
+def test_1(preproc):
+    results = preproc.preprocess("This is a test about dogs")
+    assert results.data["tokens"] == ["This", "is", "a", "test", "about", "dogs"]
 
-def test_2(result):
-    assert len(result.data["tokens"])==7
+def test_2(preproc):
+    results = preproc.preprocess("")
+    assert results.data["tokens"] == []
 
-def test_3(result):
-    assert len(result.data["tokens"])!=7
+def test_3(preproc):
+    results = preproc.preprocess("Waiting running")
+    assert results.data["lemmas"] == ["Waiting", "run"]
+
+def test_4(preproc):
+    results = preproc.preprocess("Sample Text")
+    assert results.text == "Sample Text"
+
+

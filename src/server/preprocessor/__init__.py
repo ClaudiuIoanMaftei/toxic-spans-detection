@@ -163,6 +163,7 @@ class PreProcessor:
         :return PreprocResults:
         """
         results=PreprocResults()
+        results.text = self.__corpus
         if self.__tokens is not None:
             results.data["tokens"]=self.__tokens
         if self.__lemmas is not None:
@@ -176,16 +177,21 @@ class PreProcessor:
 
         return results
 
+    def preprocess(self, text):
+        self.__corpus = text
+        self.__tokens = None
+        self.__lemmas = None
+
+        self.tokenize()
+        self.lemmatize()
+        self.generate_synonym_dictionary()
+
+        return self.generate_results()
+
 
 
 if __name__ == "__main__":
-    p=PreProcessor("THese are some test examples! Hello! Oh, how wOnDeRoUs the technological makings of man...")
-    #p.lower()
-    p.tokenize()
-    p.lemmatize()
-    #p.remove_stopwords()
-    #p.remove_punctuation()
-    p.generate_synonym_dictionary()
-    p.generate_punctuation_score()
-    p.generate_case_score()
-    print(p.generate_results().data)
+    p=PreProcessor()
+    print(p.preprocess("THese are some test examples! Hello! Oh, how wOnDeRoUs the technological makings of man...").data)
+
+
