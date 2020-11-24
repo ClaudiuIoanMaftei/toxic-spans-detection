@@ -67,7 +67,29 @@ class MachineLearning(AnalyzerStrategy):
     #     return output
 
 
-    def analyze(self, text) -> [int]:
+    def analyze(self, preproc) -> [int]:
+
+        output = []
+        preproc.tokenize()
+        preproc.lemmatize()
+        results = preproc.generate_results()
+
+        tokens = results.data["tokens"]
+        lemmas = results.data["lemmas"]
+
+        for idx in range(0, len(tokens)):
+            token = tokens[idx]
+            lemma = lemmas[idx]
+
+            if self.bayes.classify(lemma, " ".join(lemmas)) == "toxic":
+                start = results.text.find(token)
+                end = start + len(token)
+                for i in range(start, end):
+                    output.append(i)
+        return output
+
+
+    def analyze_wo_aop(self, text) -> [int]:
 
         output = []
         preproc = PreProcessor()

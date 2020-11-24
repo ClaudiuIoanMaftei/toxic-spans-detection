@@ -3,3 +3,4 @@ pytest~=6.1.2
 nltk~=3.5
 pyenchant~=3.1.1
 websockets~=8.1
+bayesian~=0.3.1
