@@ -59,7 +59,7 @@ class PreProcessor:
             elif pos[0]=="N":
                 pos=nltk.corpus.wordnet.NOUN
             elif pos[0]=="R":
-                pos=nltk.corpus.wordnet.ADC
+                pos=nltk.corpus.wordnet.ADJ
             else:
                 pos=nltk.corpus.wordnet.NOUN
 
