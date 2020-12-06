@@ -6,4 +6,3 @@ websockets~=8.1
 pandas~=1.1.4
 spacy~=2.3.3
 keras~=2.4.3
-tensorflow~=2.2

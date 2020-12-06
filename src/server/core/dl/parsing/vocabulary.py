@@ -7,7 +7,6 @@ import multiprocessing
 from time import time
 from collections import defaultdict
 
-from gensim.models.phrases import Phrases, Phraser
 from gensim.models import Word2Vec
 
 
@@ -103,7 +102,6 @@ class Vocabulary:
         max_shape = max([len(x.split()) for x in input_text['text']])
         for spans, text in zip(input_text['spans'], input_text['text']):
             spans = eval(spans)
-            print(spans, text)
             word_labels = np.zeros(max_shape)
 
             word_no = 0
