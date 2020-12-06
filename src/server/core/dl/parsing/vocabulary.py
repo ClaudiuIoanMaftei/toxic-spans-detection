@@ -15,6 +15,9 @@ class Vocabulary:
     TEST_RUN = True
     _w2v_model = None
 
+    sentence_size = 0
+    word_size = 0
+
     def __init__(self, tokens):
         """
         Constructs the row matrix from the labeled word tokens (for testing)
@@ -36,11 +39,12 @@ class Vocabulary:
         lowercase = (re.sub("[^A-Za-z']+", ' ', str(row)).lower() for row in df['text'])
 
         # lemmatization
-        txt = [cleaning(doc) for doc in nlp.pipe(lowercase, batch_size=5000, n_threads=-1)]
+        # txt = [cleaning(doc) for doc in nlp.pipe(lowercase, batch_size=5000, n_threads=-1)]
         print('Time to clean up everything: {} mins'.format(round((time() - start_time) / 60, 2)))
 
-        df_clean = pd.DataFrame({'clean': txt})
-        df_clean = df_clean.dropna().drop_duplicates()
+        df_clean = pd.DataFrame({'clean': lowercase})
+        # df_clean = df_clean.dropna().drop_duplicates()
+        labels = Vocabulary.get_labels(df, df_clean)
 
         sentences = [row.split() for row in df_clean['clean']]
 
@@ -78,7 +82,7 @@ class Vocabulary:
         max_shape = max([len(x) for x in sentences])
 
         cnn_input = []
-        for i, sent in sentences:
+        for sent in sentences:
             sentence_matrix = np.zeros([max_shape, 100])  # [number of words, 100 characters/word]
             for i, word in enumerate(sent):
                 try:
@@ -87,12 +91,42 @@ class Vocabulary:
                     pass
             cnn_input.append(sentence_matrix)
 
-        print(len(cnn_input))
-
-        return np.array(cnn_input)
+        return np.array(cnn_input), labels, 100, max_shape
 
     def get_tokens(self):
         return self._tokens
+
+    @staticmethod
+    def get_labels(input_text, clean_text):
+        labels = []
+
+        max_shape = max([len(x.split()) for x in input_text['text']])
+        for spans, text in zip(input_text['spans'], input_text['text']):
+            spans = eval(spans)
+            print(spans, text)
+            word_labels = np.zeros(max_shape)
+
+            word_no = 0
+            success = True
+            for i in range(len(text)):
+                if i in spans:
+                    try:
+                        word_labels[word_no] = 1
+                    except IndexError as e:
+                        success = False
+                        break
+                if re.match(r'\s+', text[i]):
+                    while re.match(r'\s+', text[i]):
+                        i += 1
+                    word_no += 1
+            if word_labels.sum() == 0 and len(spans) > 0:
+                print("woah")
+            if success:
+                labels.append(word_labels)
+            else:
+                labels.append(np.zeros(max_shape))
+
+        return labels
 
 
 def cleaning(doc):
