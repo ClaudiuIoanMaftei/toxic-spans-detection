@@ -17,7 +17,7 @@ def test_3(machine_learning):
     assert machine_learning.analyze("Have a nice day") == []
 
 def test_4(machine_learning):
-    assert machine_learning.analyze("You are stupid") == [8, 9, 10, 11, 12, 13]
+    assert machine_learning.analyze("You are such an idiot") == [16, 17, 18, 19, 20]
 
 def test_5(machine_learning):
-    assert machine_learning.analyze("You are such an idiot") == [16, 17, 18, 19, 20]
+    assert machine_learning.analyze("This man is a sickening, mentally ill joke.") == [38, 39, 40, 41]

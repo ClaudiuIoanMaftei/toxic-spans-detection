@@ -18,9 +18,9 @@ class PreProcessor:
     __case_score= None
 
     def __init__(self, corpus=""):
-        PreProcessor.__instance = self
-        PreProcessor.__corpus = corpus
-        PreProcessor.__tokens = None
+        self.__instance = self
+        self.__corpus = corpus
+        self.__tokens = None
 
     @staticmethod
     def get_instance():
@@ -59,7 +59,7 @@ class PreProcessor:
             elif pos[0]=="N":
                 pos=nltk.corpus.wordnet.NOUN
             elif pos[0]=="R":
-                pos=nltk.corpus.wordnet.ADC
+                pos=nltk.corpus.wordnet.ADJ
             else:
                 pos=nltk.corpus.wordnet.NOUN
 

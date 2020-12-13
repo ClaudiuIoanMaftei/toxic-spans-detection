@@ -2,6 +2,8 @@ import nltk
 from nltk.corpus import sentiwordnet as swn
 from src.server.core import SingletonException, AnalyzerStrategy
 from src.server.core.ml import tokenizer
+from src.server.preprocessor import PreProcessor
+from src.server.core.ml.bayes import Bayes
 
 
 class SentiWordNet:
@@ -47,17 +49,61 @@ class SentiWordNet:
 
 class MachineLearning(AnalyzerStrategy):
     def __init__(self):
-        pass
+        self.bayes = Bayes(0)
+        self.bayes.load()
 
-    def analyze(self, preprocessed) -> [int]:
+    # def analyze(self, text) -> [int]:
+    #
+    #     output = []
+    #     tokens = tokenizer.tokenize(text)
+    #     senti = SentiWordNet.get_instance()
+    #
+    #     for token in tokens:
+    #         if senti.query(token) > 0.1:
+    #             start = text.find(token)
+    #             end = start + len(token)
+    #             for i in range(start, end):
+    #                 output.append(i)
+    #     return output
+
+
+    def analyze(self, preproc) -> [int]:
 
         output = []
-        tokens = tokenizer.tokenize(preprocessed)
-        senti = SentiWordNet.get_instance()
+        preproc.tokenize()
+        preproc.lemmatize()
+        results = preproc.generate_results()
 
-        for token in tokens:
-            if senti.query(token) > 0.1:
-                start = preprocessed.find(token)
+        tokens = results.data["tokens"]
+        lemmas = results.data["lemmas"]
+
+        for idx in range(0, len(tokens)):
+            token = tokens[idx]
+            lemma = lemmas[idx]
+
+            if self.bayes.classify(lemma, " ".join(lemmas)) == "toxic":
+                start = results.text.find(token)
+                end = start + len(token)
+                for i in range(start, end):
+                    output.append(i)
+        return output
+
+
+    def analyze_wo_aop(self, text) -> [int]:
+
+        output = []
+        preproc = PreProcessor()
+        results = preproc.preprocess(text)
+
+        tokens = results.data["tokens"]
+        lemmas = results.data["lemmas"]
+
+        for idx in range(0, len(tokens)):
+            token = tokens[idx]
+            lemma = lemmas[idx]
+
+            if self.bayes.classify(lemma, " ".join(lemmas)) == "toxic":
+                start = text.find(token)
                 end = start + len(token)
                 for i in range(start, end):
                     output.append(i)
