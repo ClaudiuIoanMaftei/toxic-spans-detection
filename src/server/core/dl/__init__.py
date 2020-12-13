@@ -9,19 +9,26 @@ class DeepLearning(AnalyzerStrategy):
 
     def __init__(self):
         self._execution_strategy = DefaultExecution()
-        # self.dataset_vocabulary = Vocabulary.from_csv("../../../../datasets/tsd_train.csv")
-        self._train("")
+        self.dataset_vocabulary, labels, word_size, sentence_size = Vocabulary.from_csv(
+            "../../../../datasets/tsd_train.csv")
+        self._train({
+            "word_size": word_size,
+            "sent_size": sentence_size,
+            "input": self.dataset_vocabulary,
+            "labels": labels
+        })
 
     def analyze(self, preprocessed) -> [int]:
         return None
 
-    def _train(self, input_directory):
+    def _train(self, kwargs):
         """
         Trains the CNN with the given input files
         :param input_directory: directory with one or more CSV files used as input data
         :return: None
         """
-        pass
+        self.strategy = DefaultExecution()
+        self.strategy.init(**kwargs)
 
 
 if __name__ == "__main__":
