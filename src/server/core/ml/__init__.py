@@ -1,10 +1,8 @@
 import nltk
 from nltk.corpus import sentiwordnet as swn
 from src.server.core import SingletonException, AnalyzerStrategy
-from src.server.core.ml import tokenizer
 from src.server.preprocessor import PreProcessor
-#from src.server.core.ml.bayes import Bayes
-from src.server.core.ml.bayes2 import BayesBank
+from src.server.core.ml.bayes import BayesBank
 
 
 class SentiWordNet:
@@ -67,31 +65,10 @@ class MachineLearning(AnalyzerStrategy):
     #                 output.append(i)
     #     return output
 
-
-    def analyzeBV1(self, preproc) -> [int]:
-
-        output = []
-        preproc.tokenize()
-        preproc.lemmatize()
-        results = preproc.generate_results()
-
-        tokens = results.data["tokens"]
-        lemmas = results.data["lemmas"]
-
-        for idx in range(0, len(tokens)):
-            token = tokens[idx]
-            lemma = lemmas[idx]
-
-            if self.bayes.classify(lemma, " ".join(lemmas)) == "toxic":
-                start = results.text.find(token)
-                end = start + len(token)
-                for i in range(start, end):
-                    output.append(i)
-        return output
-
     def analyze(self, preproc) -> [int]:
 
         output = []
+        preproc.lower()
         preproc.tokenize()
         preproc.lemmatize()
         results = preproc.generate_results()
