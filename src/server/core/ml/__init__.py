@@ -3,7 +3,8 @@ from nltk.corpus import sentiwordnet as swn
 from src.server.core import SingletonException, AnalyzerStrategy
 from src.server.core.ml import tokenizer
 from src.server.preprocessor import PreProcessor
-from src.server.core.ml.bayes import Bayes
+#from src.server.core.ml.bayes import Bayes
+from src.server.core.ml.bayes2 import BayesBank
 
 
 class SentiWordNet:
@@ -49,7 +50,7 @@ class SentiWordNet:
 
 class MachineLearning(AnalyzerStrategy):
     def __init__(self):
-        self.bayes = Bayes(0)
+        self.bayes = BayesBank()
         self.bayes.load()
 
     # def analyze(self, text) -> [int]:
@@ -67,7 +68,7 @@ class MachineLearning(AnalyzerStrategy):
     #     return output
 
 
-    def analyze(self, preproc) -> [int]:
+    def analyzeBV1(self, preproc) -> [int]:
 
         output = []
         preproc.tokenize()
@@ -88,6 +89,35 @@ class MachineLearning(AnalyzerStrategy):
                     output.append(i)
         return output
 
+    def analyze(self, preproc) -> [int]:
+
+        output = []
+        preproc.tokenize()
+        preproc.lemmatize()
+        results = preproc.generate_results()
+
+        tokens = results.data["tokens"]
+        lemmas = results.data["lemmas"]
+
+        uniq_lemmas = list(set(lemmas))
+
+        for idx in range(0, len(tokens)):
+            token = tokens[idx]
+            lemma = lemmas[idx]
+
+            lemmas_wo = list(uniq_lemmas)
+            lemmas_wo.remove(lemma)
+
+            print(lemma, lemmas_wo, self.bayes.classify(lemma, lemmas_wo))
+
+            if self.bayes.classify(lemma, lemmas_wo) == "toxic":
+                print(lemma)
+                start = results.text.find(token)
+                end = start + len(token)
+                for i in range(start, end):
+                    output.append(i)
+
+        return output
 
     def analyze_wo_aop(self, text) -> [int]:
 
