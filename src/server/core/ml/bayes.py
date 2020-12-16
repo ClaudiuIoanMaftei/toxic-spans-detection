@@ -50,8 +50,6 @@ class Bayes:
         log_probabilities = {}
         entries_count = 0
 
-        for i in range(0, len(features)):
-            features[i] = features[i]
 
         for category in self.categories:
             entries_count += self.categories[category]["count"]
@@ -59,7 +57,6 @@ class Bayes:
         for category in self.categories:
 
             category_probability = self.categories[category]["count"] / entries_count
-            #category_probability = 0.5
             log_probabilities[category] = math.log(category_probability)
 
             total_features = 0
@@ -70,10 +67,9 @@ class Bayes:
                 count_in_category = self.alpha
 
                 if feature in self.categories[category]["features"]:
-                    count_in_category = self.categories[category]["features"][feature] + self.alpha
+                    count_in_category += self.categories[category]["features"][feature]
 
                 likelihood = count_in_category / ( total_features + len(self.features_count.keys()) )
-
                 log_probabilities[category] += math.log(likelihood)
 
         max_probability = float("-inf")
