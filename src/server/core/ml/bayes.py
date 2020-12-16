@@ -117,13 +117,14 @@ class BayesBank:
                 "total_features": self.classifiers[word].total_features
             }
 
-        file = open(data_path + "f.dat", 'w')
+        file = open(data_path + "model.dat", 'w')
         file.write(json.dumps(data_bank, indent=4))
         #file.write(json.dumps(data_bank))
         file.close()
 
+
     def load(self):
-        file = open(data_path+"f.dat", 'r', encoding="utf-8")
+        file = open(data_path+"model.dat", 'r', encoding="utf-8")
         data_bank = json.loads(file.read())["classifiers"]
         file.close()
 
@@ -131,8 +132,8 @@ class BayesBank:
             self.classifiers[word] = Bayes(data_bank[word])
 
 
-def parse_train_data():
-    file = open(data_path + "tsd_train.csv", encoding="utf-8")
+def parse_data(file):
+    file = open(data_path + file, encoding="utf-8")
     entities = []
     csvreader = csv.reader(file, delimiter=',', quotechar='"')
     for row in list(csvreader)[1:]:
@@ -149,7 +150,7 @@ def parse_train_data():
 def semeval_train():
     bb = BayesBank()
 
-    train_data = parse_train_data()
+    train_data = parse_data("tsd_train.csv")
 
     for entry in train_data:
         print(entry)
@@ -191,19 +192,6 @@ def semeval_train():
 
     bb.serialize()
 
-def semeval_test():
-    bb = BayesBank()
-    bb.load()
-    print(bb.classify("you",   ["be", "an", "idiot"]))
-    print(bb.classify("be",    ["You", "an", "idiot"]))
-    print(bb.classify("an",    ["You", "be", "idiot"]))
-    print(bb.classify("idiot", ["You", "be", "an"]))
-
-    print(bb.classify("hello",    ["friend"]))
-    print(bb.classify("friend",   ["Hello"]))
-
-    print(bb.classify("joke", ['sicken', 'be', 'ill', 'man', ',', 'This', 'a', 'mentally']))
-
 def demo():
 
     bb = BayesBank()
@@ -224,6 +212,3 @@ if __name__ == "__main__":
 
         elif sys.argv[1] == "train":
             semeval_train()
-
-        elif sys.argv[1] == "test":
-            semeval_test()
