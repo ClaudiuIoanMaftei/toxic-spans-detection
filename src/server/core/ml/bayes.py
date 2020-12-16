@@ -3,6 +3,8 @@ import sys, re, csv, json, bayesian
 
 # Global vars
 data_path = "src/server/core/ml/data/"
+
+
 #####################################
 
 
@@ -11,7 +13,7 @@ class Bayes:
         self.bayes_type = bayes_type
 
     def parse_train_data(self):
-        file = open(data_path + "tsd_train.csv", encoding="utf-8")
+        file = open("tsd_train.csv", encoding="utf-8")
         entities = []
         csvreader = csv.reader(file, delimiter=',', quotechar='"')
         for row in list(csvreader)[1:]:
@@ -47,7 +49,7 @@ class Bayes:
             for idx in entry[0]:
 
                 curr_word += entry[1][idx]
-                if idx > last_idx+1:
+                if idx > last_idx + 1:
                     toxic_words += curr_word.split(" ")
                     curr_word = ""
                 last_idx = idx
@@ -69,8 +71,7 @@ class Bayes:
                 else:
                     out_data[lemma]["non_toxic"].append(" ".join(lemmas_wo))
 
-
-        file = open(data_path+"f.dat", 'w')
+        file = open("f.dat", 'w')
         file.write(json.dumps(out_data, indent=4))
         file.close()
 
@@ -90,10 +91,9 @@ class Bayes:
         else:
             print("Inavlid bayes type: " + str(self.bayes_type))
 
-
     def load(self):
         if self.bayes_type == 0:
-            file = open(data_path+"f.dat", 'r', encoding="utf-8")
+            file = open("f.dat", 'r', encoding="utf-8")
             self.data = json.loads(file.read())
             file.close()
         else:
@@ -107,6 +107,7 @@ class Bayes:
             "toxic": self.data[lemma]["toxic"],
             "non_toxic": self.data[lemma]["non_toxic"]
         })
+
 
 def train_classifier(bayes_type):
     bayes = Bayes(bayes_type)

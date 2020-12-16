@@ -50,7 +50,7 @@ class SentiWordNet:
 class MachineLearning(AnalyzerStrategy):
     def __init__(self):
         self.bayes = Bayes(0)
-        self.bayes.load()
+        # self.bayes.load()
 
     # def analyze(self, text) -> [int]:
     #

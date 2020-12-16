@@ -1,0 +1,14 @@
+.main--container {
+  padding-top: 35vh;
+
+  & &__input {
+    width: 50vw;
+    height: 50vh;
+    margin: 0 auto;
+  }
+
+  & &__controls {
+    margin: 0 auto;
+  }
+
+}
