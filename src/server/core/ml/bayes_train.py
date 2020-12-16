@@ -1,32 +1,37 @@
+import sys
 
-def semeval_train():
+from src.server.core.ml.bayes import BayesBank
+from src.server.preprocessor  import PreProcessor
+from src.server.core.ml.utils import parse_data, spans_to_words
+
+#######################
+# Training Strategies #
+#######################
+
+# Takes the rests of the words in the message as features
+
+def train_all_words():
     bb = BayesBank()
+
+    print("train_all_words")
 
     train_data = parse_data("tsd_train.csv")
 
+
     for entry in train_data:
         print(entry)
-        preproc = PreProcessor()
-        results = preproc.preprocess(entry[1])
+        
+        preproc = PreProcessor(entry[1])
+        preproc.tokenize()
+        preproc.lemmatize()
+
+        results = preproc.generate_results()
 
         tokens = results.data["tokens"]
         lemmas = results.data["lemmas"]
         uniq_lemmas = list(set(lemmas))
-        toxic_words = []
 
-        curr_word = ""
-        last_idx = 0
-        if len(entry[0]) > 0:
-            last_idx = entry[0][0]
-
-        for idx in entry[0]:
-            curr_word += entry[1][idx]
-            if idx > last_idx + 1:
-                toxic_words += curr_word.split(" ")
-                curr_word = ""
-            last_idx = idx
-        if curr_word != "":
-            toxic_words += curr_word.split(" ")
+        toxic_words = spans_to_words(entry[0], entry[1])
 
         for idx in range(0, len(tokens)):
             token = tokens[idx]
@@ -43,3 +48,34 @@ def semeval_train():
                 bb.train(lemma, lemmas_wo, "non_toxic")
 
     bb.serialize()
+
+# Takes only the words that are in the same sentence
+def train_sentence():
+    bb = BayesBank()
+    train_data = parse_data("tsd_train.csv")
+
+    for entry in train_data:
+        print(entry)
+        preproc = PreProcessor(entry[1]) 
+        preproc.tokenize()
+        preproc.lemmatize()
+
+        results = preproc.generate_results()
+
+        tokens = results.data["tokens"]
+        lemmas = results.data["lammas"]
+
+        toxic_words = spans_to_words(entry[0], entry[1]) 
+
+               
+
+
+
+###############
+# Entry point #
+###############
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "1":
+            train_all_words()
