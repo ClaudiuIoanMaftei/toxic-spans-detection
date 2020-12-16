@@ -35,6 +35,10 @@ jobs:
       with:
         args: unzip -qq src/server/core/ml/data/f.zip -d src/server/core/ml/data/
 
+    - name: Check Ml Model
+      run: |
+        ls src/server/core/ml/data
+
     - name: Testing
       if: always()
       run: pytest
