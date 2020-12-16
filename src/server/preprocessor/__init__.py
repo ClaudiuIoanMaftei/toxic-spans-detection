@@ -16,6 +16,7 @@ class PreProcessor:
     __synonyms= None
     __punctuation_score = None
     __case_score= None
+    __polarity_score=None
 
     def __init__(self, corpus=""):
         PreProcessor.__instance = self
@@ -68,6 +69,58 @@ class PreProcessor:
                 self.__lemmas.append(nltk.corpus.wordnet.morphy(lemma))
             else:
                 self.__lemmas.append(lemma)
+
+    def generate_polarity_scores(self):
+        """
+        Generate a dictionary containing the polarity score of each word
+        :return:
+        """
+        if self.__lemmas is None:
+            self.tokenize()
+
+        pos_list = nltk.pos_tag(self.__tokens)
+
+        self.__polarity_score={}
+
+        for token,pos in pos_list: #pos as part of speech
+            new_pos='n'
+            if pos[0]=='J':
+                new_pos='a'
+            elif pos[0]=="V":
+                new_pos='v'
+            elif pos[0]=="R":
+                new_pos='r'
+
+            synsets = nltk.corpus.sentiwordnet.senti_synsets(token,new_pos)
+            token_score={"pos":0,"neg":0} #pos as positive
+            for synset in synsets:
+                pos_score=synset.pos_score()
+                neg_score=synset.neg_score()
+                token_score["pos"]+=pos_score
+                token_score["neg"]+=neg_score
+
+            if not token in self.__polarity_score:
+                self.__polarity_score[token]=token_score
+            else:
+                self.__polarity_score[token]["pos"]+=token_score["pos"]
+                self.__polarity_score[token]["neg"] += token_score["neg"]
+
+
+            if self.__synonyms!=None and token in self.__synonyms.keys():
+                for synonym in self.__synonyms[token]:
+                    synsets = nltk.corpus.sentiwordnet.senti_synsets(synonym, new_pos)
+                    token_score = {"pos": 0, "neg": 0}  # pos as positive
+                    for synset in synsets:
+                        pos_score = synset.pos_score()
+                        neg_score = synset.neg_score()
+                        token_score["pos"] += pos_score
+                        token_score["neg"] += neg_score
+
+                    if not synonym in self.__polarity_score.keys():
+                        self.__polarity_score[synonym] = token_score
+                    else:
+                        self.__polarity_score[synonym]["pos"] += token_score["pos"]
+                        self.__polarity_score[synonym]["neg"] += token_score["neg"]
 
     def remove_stopwords(self):
         """
@@ -122,6 +175,7 @@ class PreProcessor:
         """
         punctuation=len([char for char in self.__corpus if not char.isalnum() and char not in " \n\t"])
         self.__punctuation_score = punctuation / len(self.__corpus)
+        print(punctuation, self.__punctuation_score)
 
 
     def generate_case_score(self,weight=0.5):
@@ -163,7 +217,6 @@ class PreProcessor:
         :return PreprocResults:
         """
         results=PreprocResults()
-        results.text = self.__corpus
         if self.__tokens is not None:
             results.data["tokens"]=self.__tokens
         if self.__lemmas is not None:
@@ -173,25 +226,23 @@ class PreProcessor:
         if self.__punctuation_score is not None:
             results.data["punctuation_score"] = self.__punctuation_score
         if self.__case_score is not None:
-            results.data["punctuation_score"] = self.__case_score
+            results.data["case_score"] = self.__case_score
+        if self.__polarity_score is not None:
+            results.data["polarity_score"] = self.__polarity_score
 
         return results
-
-    def preprocess(self, text):
-        self.__corpus = text
-        self.__tokens = None
-        self.__lemmas = None
-
-        self.tokenize()
-        self.lemmatize()
-        self.generate_synonym_dictionary()
-
-        return self.generate_results()
 
 
 
 if __name__ == "__main__":
-    p=PreProcessor()
-    print(p.preprocess("THese are some test examples! Hello! Oh, how wOnDeRoUs the technological makings of man...").data)
-
-
+    p=PreProcessor("THese are some test examples! Hello! Oh, how grueSOME the technological makings of man...")
+    p.lower()
+    p.tokenize()
+    p.lemmatize()
+    #p.remove_stopwords()
+    #p.remove_punctuation()
+    p.generate_synonym_dictionary()
+    p.generate_punctuation_score()
+    p.generate_case_score()
+    p.generate_polarity_scores()
+    print(p.generate_results().data)
