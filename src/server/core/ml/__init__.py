@@ -18,11 +18,17 @@ class MachineLearning(AnalyzerStrategy):
         tokens = results.data["tokens"]
         lemmas = results.data["lemmas"]
 
+        used_tokens = []
+
+        uniq_tokens = list(set(tokens))
         uniq_lemmas = list(set(lemmas))
 
         for idx in range(0, len(tokens)):
             token = tokens[idx]
             lemma = lemmas[idx]
+
+            if token in used_tokens:
+                continue
 
             lemmas_wo = list(uniq_lemmas)
             lemmas_wo.remove(lemma)
@@ -32,6 +38,8 @@ class MachineLearning(AnalyzerStrategy):
                 end = start + len(token)
                 for i in range(start, end):
                     output.append(i)
+
+            used_tokens.append(token)
 
         return output
 
