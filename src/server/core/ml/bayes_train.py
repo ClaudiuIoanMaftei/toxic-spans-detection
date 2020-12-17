@@ -22,6 +22,7 @@ def train_all_words():
         print(entry)
         
         preproc = PreProcessor(entry[1])
+        preproc.lower()
         preproc.tokenize()
         preproc.lemmatize()
 
@@ -39,8 +40,6 @@ def train_all_words():
 
             lemmas_wo = list(uniq_lemmas)
             lemmas_wo.remove(lemma)
-            for i in range(0, len(lemmas_wo)):
-                lemmas_wo[i] = lemmas[i]
 
             if token in toxic_words:
                 bb.train(lemma, lemmas_wo, "toxic")
@@ -48,6 +47,7 @@ def train_all_words():
                 bb.train(lemma, lemmas_wo, "non_toxic")
 
     bb.serialize()
+
 
 # Takes only the words that are in the same sentence
 def train_sentence():
@@ -63,12 +63,31 @@ def train_sentence():
         results = preproc.generate_results()
 
         tokens = results.data["tokens"]
-        lemmas = results.data["lammas"]
+        lemmas = results.data["lemmas"]
 
-        toxic_words = spans_to_words(entry[0], entry[1]) 
+        toxic_words = spans_to_words(entry[0], entry[1])
 
-               
+        punctuation = ".!?"
 
+        for idx in range(0, len(tokens)):
+            
+            lemmas_in_sentence = []
+            in_sen_idx = idx - 1
+            while in_sen_idx>0 and not tokens[in_sen_idx] in punctuation:
+                lemmas_in_sentence.append(lemmas[in_sen_idx])
+                in_sen_idx -= 1
+
+            in_sen_idx = idx + 1
+            while in_sen_idx<len(tokens) and not tokens[in_sen_idx] in punctuation:
+                lemmas_in_sentence.append(lemmas[in_sen_idx])
+                in_sen_idx += 1       
+
+            if tokens[idx] in toxic_words:
+                bb.train(lemmas[idx], lemmas_in_sentence, "toxic")
+            else:
+                bb.train(lemmas[idx], lemmas_in_sentence, "non_toxic")
+
+    bb.serialize()
 
 
 ###############
@@ -79,3 +98,5 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         if sys.argv[1] == "1":
             train_all_words()
+        elif sys.argv[1] == "2":
+            train_sentence()

@@ -116,8 +116,8 @@ class BayesBank:
             }
 
         file = open(data_path + "model.dat", 'w')
-        file.write(json.dumps(data_bank, indent=4))
-        #file.write(json.dumps(data_bank))
+        #file.write(json.dumps(data_bank, indent=4))
+        file.write(json.dumps(data_bank))
         file.close()
 
 

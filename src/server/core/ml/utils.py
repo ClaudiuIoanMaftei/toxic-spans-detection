@@ -21,10 +21,11 @@ def spans_to_words(spans, text):
         last_idx = spans[0]
 
     for idx in spans:
-        curr_word += text[idx]
         if idx > last_idx + 1:
             toxic_words += curr_word.split(" ")
-            curr_word = ""
+            curr_word = text[idx]
+        else:
+            curr_word += text[idx]
         last_idx = idx
     if curr_word != "":
         toxic_words += curr_word.split(" ")
