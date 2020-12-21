@@ -9,10 +9,21 @@ class DeepLearning(AnalyzerStrategy):
 
     def __init__(self):
         self._execution_strategy = DefaultExecution()
+<<<<<<< HEAD
         self.dataset_vocabulary = []
         self.labels = []
         self.word_size = 0
         self.sentence_size = 0
+=======
+        self.dataset_vocabulary, labels, word_size, sentence_size = Vocabulary.from_csv(
+            "datasets/tsd_train.csv")
+        self._train({
+            "word_size": word_size,
+            "sent_size": sentence_size,
+            "input": self.dataset_vocabulary,
+            "labels": labels
+        })
+>>>>>>> d9a87289e0d210f8b401d8554297be8e417c2bd5
 
     def analyze(self, preprocessed) -> [int]:
         return None
