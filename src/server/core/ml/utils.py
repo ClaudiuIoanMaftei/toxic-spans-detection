@@ -1,4 +1,4 @@
-import csv
+import csv, re
 
 ###############
 # Global Vars #
@@ -48,3 +48,32 @@ def parse_data(file):
         entities.append([spans, text])
     return entities
 
+
+# Parse aop log
+def parse_aop_log(file):
+    file = open(file, encoding="utf-8")
+    rows = file.read().split("\n")
+    file.close()
+
+    functions = {}
+
+    for row in rows[1:]:
+        match = re.match(r"([a-zA-Z\.]+)\(\): ([0-9]+) ms", row)
+        if match:
+
+            function_name = match.group(1)
+            time = match.group(2)
+
+            if function_name not in functions:
+
+                functions[function_name] = {
+                    "time": int(time),
+                    "count": 1
+                }
+
+            else:
+
+                functions[function_name]["time"] += int(time)
+                functions[function_name]["count"] += 1
+
+    return functions
