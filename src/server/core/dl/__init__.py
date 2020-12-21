@@ -2,7 +2,6 @@ from src.server.core import AnalyzerStrategy
 from src.server.core.dl.cnn.executors.default_execution import DefaultExecution
 from src.server.core.dl.parsing.vocabulary import Vocabulary
 
-
 class DeepLearning(AnalyzerStrategy):
     _execution_strategy = None
     dataset_vocabulary = None
@@ -10,7 +9,7 @@ class DeepLearning(AnalyzerStrategy):
     def __init__(self):
         self._execution_strategy = DefaultExecution()
         self.dataset_vocabulary, labels, word_size, sentence_size = Vocabulary.from_csv(
-            "../../../../datasets/tsd_train.csv")
+            "datasets/tsd_train.csv")
         self._train({
             "word_size": word_size,
             "sent_size": sentence_size,
