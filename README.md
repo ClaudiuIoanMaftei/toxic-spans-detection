@@ -12,6 +12,10 @@ Install pytest library (PyCharm will automatically detect it from the requiremen
 
 If you cannot run `pytest` command, try installing it manually with pip/pip3. Ultimately, run `python -m pytest` to run it without having the executable in the ```$PATH``` variable.
 
+# To run ML component
+
+Unzip the archive found in the directory src/server/core/ml/data
+
 # To run DL component
 
 The DL component uses TensorFlow and keras to apply a CNN model over the given input. In order to install these, there are a few steps you need to follow first:
