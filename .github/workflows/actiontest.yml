@@ -41,7 +41,8 @@ jobs:
 
     - name: Testing
       if: always()
-      run: pytest
+      run: pytest --cov=. --cov-config=.coveragerc
+
 
 
 

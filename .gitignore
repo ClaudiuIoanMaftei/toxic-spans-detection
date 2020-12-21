@@ -5,3 +5,5 @@ src/server/core/ml/data/f.dat
 src/server/core/ml/data/tsd_train_test.csv
 src/server/core/ml/data/model.dat
 app-ui/node_modules
+htmlcov/
+.coverage
