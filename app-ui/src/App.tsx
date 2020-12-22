@@ -10,14 +10,13 @@ type AppProps = {
 
 const App: React.FunctionComponent<AppProps> = (props) => {
   const [connection, setConnection] = useState<WebSocket>();
-  const [response, setResponse] = useState<number[]>();
+  const [response, setResponse] = useState();
 
   useEffect(() => {
       const connection = new WebSocket("ws://127.0.0.1:8000/")
 
       connection.onopen = () => {
           console.log("connection established")
-          connection.send("test");
       }
 
       connection.onmessage = (event) => {
@@ -30,8 +29,7 @@ const App: React.FunctionComponent<AppProps> = (props) => {
 
   return (
     <div className="App">
-        <div className="title">Toxic span detector</div>
-        <Home connection={connection}/>
+        <Home connection={connection} message={response}/>
     </div>
   );
 }

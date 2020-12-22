@@ -1,3 +1,5 @@
+from enum import Enum
+import time
 # import asyncio
 #
 # import websocket as websocket
@@ -118,14 +120,32 @@ import json
 from src.server.core import Core
 
 
+class STEP(Enum):
+    PREPROCESSING = 0,
+    ANALYZING = 1,
+    POSTPROCESSING = 2
+
+
 async def handler(websocket, path):
-    # test_text = await websocket.recv()
-    # print(test_text)
+    test_text = await websocket.recv()
+    print(test_text)
 
-    core = Core()
-    core.analyze("suck")
+    await websocket.send(str(STEP.PREPROCESSING))
 
-    ans = [10,11,12,13,14,15,51,52,53,54,55,56]
+    time.sleep(1)
+
+    await websocket.send(str(STEP.ANALYZING))
+
+    time.sleep(1)
+
+    await websocket.send(str(STEP.POSTPROCESSING))
+
+    time.sleep(1)
+
+    ans = [5, 6, 7, 8, 9, 10, 17, 18, 19, 20, 21, 22, 23, 24, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310]
+
+    # This idiot says bullshit.It 's difficult to distill the power, grace, and grit that make this drama so unforgettable. As mesmerizing as the movie is, isn't just filled
+    # with problematic content.People told me this was amazing.Actually a lot of people.But wow, nobody warned me this was going to be emotionally striking.Praising this movie for being powerful is just an understatement.So fuck you and do not rate that way!
 
     await websocket.send(json.dumps(ans))
 
