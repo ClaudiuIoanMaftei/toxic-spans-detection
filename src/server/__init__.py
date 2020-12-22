@@ -1,9 +1,14 @@
 from enum import Enum
 import time
-# import asyncio
+import asyncio
+import json
+from src.server.core.ml import MachineLearning
+
+import websocket
+
+# from src.server.core import Core
 #
-# import websocket as websocket
-# import websockets
+import websockets
 #
 # from src.server.core import Core
 # from src.server.postprocessor import PostProcessor
@@ -112,12 +117,8 @@ import time
 # if __name__ == "__main__":
 #     print("Server")
 #     Server().run()
-
-import asyncio
-import websockets
-import json
-
 from src.server.core import Core
+from src.server.preprocessor import PreProcessor
 
 
 class STEP(Enum):
@@ -129,6 +130,7 @@ class STEP(Enum):
 async def handler(websocket, path):
     test_text = await websocket.recv()
     print(test_text)
+
 
     await websocket.send(str(STEP.PREPROCESSING))
 

@@ -68,6 +68,7 @@ class MachineLearning(AnalyzerStrategy):
 
 
     def analyze(self, preproc) -> [int]:
+        print(preproc)
 
         output = []
         preproc.tokenize()
