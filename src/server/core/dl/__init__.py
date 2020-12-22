@@ -9,31 +9,21 @@ class DeepLearning(AnalyzerStrategy):
 
     def __init__(self):
         self._execution_strategy = DefaultExecution()
-<<<<<<< HEAD
         self.dataset_vocabulary = []
         self.labels = []
         self.word_size = 0
         self.sentence_size = 0
-=======
-        self.dataset_vocabulary, labels, word_size, sentence_size = Vocabulary.from_csv(
-            "datasets/tsd_train.csv")
-        self._train({
-            "word_size": word_size,
-            "sent_size": sentence_size,
-            "input": self.dataset_vocabulary,
-            "labels": labels
-        })
->>>>>>> d9a87289e0d210f8b401d8554297be8e417c2bd5
+        self.model = 0
 
     def analyze(self, preprocessed) -> [int]:
         return None
 
-    def _import_vocabulary(self, train_file = "datasets/tsd_train.csv" ):
+    def _import_vocabulary(self, training_data_path):
         """
-        Imports Vocabulary from external file
-        :param train_file: required training data in csv file
+        Imports Vocabulary from external files
+        :param train_file: required training data in csv files
         """
-        self.dataset_vocabulary, self.labels, self.word_size, self.sentence_size = Vocabulary.from_csv(train_file)
+        self.dataset_vocabulary, self.labels, self.word_size, self.sentence_size = Vocabulary.from_csv(training_data_path)
 
     def _train(self, kwargs):
         """
@@ -41,10 +31,12 @@ class DeepLearning(AnalyzerStrategy):
         :return: None
         """
         self.strategy = DefaultExecution()
-        self.strategy.init(**kwargs)
+        self.model = self.strategy.init(**kwargs)
+        if self.model != None:
+            self.model.save("fashion_model_dropout.h5py")
 
-    def execute_training(self):
-        self._import_vocabulary()
+    def execute_training(self, training_data_path = "datasets/tsd_train.csv"):
+        self._import_vocabulary(training_data_path)
         self._train({
             "word_size": self.word_size,
             "sent_size": self.sentence_size,
@@ -56,5 +48,8 @@ class DeepLearning(AnalyzerStrategy):
 if __name__ == "__main__":
     print("Deep Learning")
     dl = DeepLearning()
-    if sys.argv[1] == "train":
-        dl.execute_training()
+    if sys.argv[1] == "-train":
+        try:
+            dl.execute_training(sys.argv[2])
+        except:
+            dl.execute_training()
