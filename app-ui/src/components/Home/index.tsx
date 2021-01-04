@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 
+import ResizableTextarea from "../ResizableTextArea";
 import Button from "../Button";
-import ResizebleTextarea from "../ResizebleTextArea";
 
 import "./_index.scss";
 
@@ -32,7 +32,7 @@ const Home: React.FunctionComponent<HomeProps> = (props) => {
                 setFinishedSteps([...finishedSteps, STEP.ANALYZING])
             } else if (props.message.includes(STEP.POSTPROCESSING)) {
                 setFinishedSteps([...finishedSteps, STEP.POSTPROCESSING])
-                setIsLoading(false);
+                // setIsLoading(false);
             } else {
                 const plainSpans = props.message;
                 setSpans(plainSpans.replace("[", "").replace("]", "").split(",").map((el: string) => (+el)));
@@ -46,12 +46,18 @@ const Home: React.FunctionComponent<HomeProps> = (props) => {
     }
 
     const handleOnCheck = () => {
-        props.connection && props.connection.send(text ?? '');
+        // props.connection && props.connection.send(text ?? '');
+        // setFinishedSteps([STEP.PREPROCESSING, STEP.ANALYZING, STEP.POSTPROCESSING]);
         setIsLoading(true);
+        setTimeout(() => setIsLoading(false), 4000);
+        setTimeout(() => setFinishedSteps([STEP.PREPROCESSING]), 1000);
+        setTimeout(() => setFinishedSteps([STEP.PREPROCESSING, STEP.ANALYZING]), 2000);
+        setTimeout(() => setFinishedSteps([STEP.PREPROCESSING, STEP.ANALYZING, STEP.POSTPROCESSING]), 3000);
+        setTimeout(() => setSpans([1]), 3000);
     }
 
     return <div className="main--container">
-        <ResizebleTextarea className="main--container__input" onChange={handleOnChange} spans={spans}/>
+        <ResizableTextarea className="main--container__input" onChange={handleOnChange} spans={spans}/>
         <div className="main--container__results">
             <Button className="analyze" isLoading={isLoading} onClick={handleOnCheck}> Analyze text </Button>
             <ul>

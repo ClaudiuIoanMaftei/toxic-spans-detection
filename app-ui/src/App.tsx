@@ -4,9 +4,7 @@ import Home from "./components/Home";
 
 import './App.scss';
 
-type AppProps = {
-
-}
+type AppProps = {}
 
 const App: React.FunctionComponent<AppProps> = (props) => {
   const [connection, setConnection] = useState<WebSocket>();
