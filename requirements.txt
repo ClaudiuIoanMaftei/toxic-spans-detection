@@ -7,3 +7,5 @@ bayesian~=0.3.1
 pandas~=1.1.4
 spacy~=2.3.3
 keras~=2.4.3
+numpy~=1.18.0
+weka~=1.0.6
