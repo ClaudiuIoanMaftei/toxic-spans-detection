@@ -27,6 +27,43 @@ class PreProcessor:
     def get_instance():
         return PreProcessor.__instance
 
+    def __pos_to_wordnet_pos(self,pos):
+        if pos == 'J':
+            return nltk.corpus.wordnet.ADJ
+        if pos == "V":
+            return nltk.corpus.wordnet.VERB
+        if pos == "N":
+            return nltk.corpus.wordnet.NOUN
+        if pos == "R":
+            return nltk.corpus.wordnet.ADC
+
+        return nltk.corpus.wordnet.NOUN
+
+    def __pos_to_sentiwordnet_pos(self,pos):
+        if pos == 'J':
+            return 'a'
+        if pos == "V":
+            return 'v'
+        if pos == "R":
+            return 'r'
+
+        return 'n'
+
+    def __add_polarity_score(self,token, pos):
+        synsets = nltk.corpus.sentiwordnet.senti_synsets(token, pos)
+        token_score = {"pos": 0, "neg": 0}  # pos as positive
+        for synset in synsets:
+            pos_score = synset.pos_score()
+            neg_score = synset.neg_score()
+            token_score["pos"] += pos_score
+            token_score["neg"] += neg_score
+
+        if not token in self.__polarity_score:
+            self.__polarity_score[token] = token_score
+        else:
+            self.__polarity_score[token]["pos"] += token_score["pos"]
+            self.__polarity_score[token]["neg"] += token_score["neg"]
+
     def lower(self):
         """
         Lower all letters in the corpus
@@ -53,16 +90,7 @@ class PreProcessor:
 
         self.__lemmas=[]
         for token,pos in pos_list:
-            if pos[0]=='J':
-                pos=nltk.corpus.wordnet.ADJ
-            elif pos[0]=="V":
-                pos=nltk.corpus.wordnet.VERB
-            elif pos[0]=="N":
-                pos=nltk.corpus.wordnet.NOUN
-            elif pos[0]=="R":
-                pos=nltk.corpus.wordnet.ADC
-            else:
-                pos=nltk.corpus.wordnet.NOUN
+            pos=self.__pos_to_wordnet_pos(pos[0])
 
             lemma = self.__lemmatizer.lemmatize(token, pos)
             if nltk.corpus.wordnet.morphy(lemma) is not None:
@@ -83,44 +111,12 @@ class PreProcessor:
         self.__polarity_score={}
 
         for token,pos in pos_list: #pos as part of speech
-            new_pos='n'
-            if pos[0]=='J':
-                new_pos='a'
-            elif pos[0]=="V":
-                new_pos='v'
-            elif pos[0]=="R":
-                new_pos='r'
-
-            synsets = nltk.corpus.sentiwordnet.senti_synsets(token,new_pos)
-            token_score={"pos":0,"neg":0} #pos as positive
-            for synset in synsets:
-                pos_score=synset.pos_score()
-                neg_score=synset.neg_score()
-                token_score["pos"]+=pos_score
-                token_score["neg"]+=neg_score
-
-            if not token in self.__polarity_score:
-                self.__polarity_score[token]=token_score
-            else:
-                self.__polarity_score[token]["pos"]+=token_score["pos"]
-                self.__polarity_score[token]["neg"] += token_score["neg"]
-
+            new_pos=self.__pos_to_sentiwordnet_pos(pos[0])
+            self.__add_polarity_score(token,new_pos)
 
             if self.__synonyms!=None and token in self.__synonyms.keys():
                 for synonym in self.__synonyms[token]:
-                    synsets = nltk.corpus.sentiwordnet.senti_synsets(synonym, new_pos)
-                    token_score = {"pos": 0, "neg": 0}  # pos as positive
-                    for synset in synsets:
-                        pos_score = synset.pos_score()
-                        neg_score = synset.neg_score()
-                        token_score["pos"] += pos_score
-                        token_score["neg"] += neg_score
-
-                    if not synonym in self.__polarity_score.keys():
-                        self.__polarity_score[synonym] = token_score
-                    else:
-                        self.__polarity_score[synonym]["pos"] += token_score["pos"]
-                        self.__polarity_score[synonym]["neg"] += token_score["neg"]
+                    self.__add_polarity_score(synonym,new_pos)
 
     def remove_stopwords(self):
         """
