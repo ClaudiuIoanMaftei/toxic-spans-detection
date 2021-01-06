@@ -17,6 +17,7 @@ class PreProcessor:
     __punctuation_score = None
     __case_score= None
     __polarity_score=None
+    __sentences=[]
 
     def __init__(self, corpus=""):
         PreProcessor.__instance = self
@@ -35,7 +36,7 @@ class PreProcessor:
         if pos == "N":
             return nltk.corpus.wordnet.NOUN
         if pos == "R":
-            return nltk.corpus.wordnet.ADC
+            return nltk.corpus.wordnet.ADV
 
         return nltk.corpus.wordnet.NOUN
 
@@ -78,12 +79,39 @@ class PreProcessor:
         """
         self.__tokens=nltk.word_tokenize(self.__corpus)
 
+    def tokenize_sentences(self):
+        """
+        Creates a list of sentences, which are lists of tokens
+        :return:
+        """
+        if self.__lemmas is None:
+            self.lemmatize()
+
+        self.__sentences=[]
+
+        sentences=nltk.tokenize.sent_tokenize(self.__corpus)
+        lemma_index=0
+        for sentence in sentences:
+            tokens=nltk.word_tokenize(sentence)
+            list=[]
+            appearances={}
+            for token in tokens:
+                if token not in appearances:
+                    char_index=sentence.find(token)
+                else:
+                    char_index=sentence.find(token,appearances[token]+1)
+
+                appearances[token]=char_index
+                list.append({"token":token,"lemma":self.__lemmas[lemma_index],"idx":char_index})
+                lemma_index+=1
+            self.__sentences.append(list)
+
     def lemmatize(self):
         """
         Create the lemma list from the token list (created if not existing)
         :return:
         """
-        if self.__lemmas is None:
+        if self.__tokens is None:
             self.tokenize()
 
         pos_list=nltk.pos_tag(self.__tokens)
@@ -225,20 +253,23 @@ class PreProcessor:
             results.data["case_score"] = self.__case_score
         if self.__polarity_score is not None:
             results.data["polarity_score"] = self.__polarity_score
+        if self.__sentences is not None:
+            results.data["sentences"]=self.__sentences
 
         return results
 
 
 
 if __name__ == "__main__":
-    p=PreProcessor("THese are some test examples! Hello! Oh, how grueSOME the technological makings of man...")
-    p.lower()
-    p.tokenize()
-    p.lemmatize()
+    p=PreProcessor("THese are some test examples! Hello! Oh, how grueSOME the technological makings of man... \n Never have I seen succ fuckery")
+    #p.lower()
+    #p.tokenize()
+    #p.lemmatize()
     #p.remove_stopwords()
     #p.remove_punctuation()
-    p.generate_synonym_dictionary()
-    p.generate_punctuation_score()
-    p.generate_case_score()
-    p.generate_polarity_scores()
+    #p.generate_synonym_dictionary()
+    #p.generate_punctuation_score()
+    #p.generate_case_score()
+    #p.generate_polarity_scores()
+    p.tokenize_sentences()
     print(p.generate_results().data)
