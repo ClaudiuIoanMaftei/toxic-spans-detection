@@ -11,33 +11,33 @@ class Bayes:
     def __init__(self, data=None):
         self.alpha = 1
         self.categories = {}
-        self.features_count = {}
-        self.total_features = 0
+        self.unique_features = []
+        self.entries_count = 0
 
         if data != None:
+
             self.alpha = data["alpha"]
             self.categories = data["categories"]
-            self.features_count = data["features_count"]
-            self.total_features = data["total_features"]
+            self.unique_features = data["unique_features"]
+            self.entries_count = data["entries_count"]
 
     def train(self, features, category):
+
+        self.entries_count += 1
 
         if not category in self.categories:
             self.categories[category] = {
                 "count": 1,
-                "features": {}
+                "features": {},
+                "features_count" : 0
             }
         else:
             self.categories[category]["count"] += 1
 
         for feature in features:
 
-            self.total_features += 1
-
-            if not feature in self.features_count:
-                self.features_count[feature] = 1
-            else:
-                self.features_count[feature] += 1
+            if not feature in self.unique_features:
+                self.unique_features.append(feature)
 
             if not feature in self.categories[category]["features"]:
                 self.categories[category]["features"][feature] = 1
@@ -47,37 +47,30 @@ class Bayes:
 
     def classify(self, features):
 
-        log_probabilities = {}
-        entries_count = 0
-
-
-        for category in self.categories:
-            entries_count += self.categories[category]["count"]
-
-        for category in self.categories:
-
-            category_probability = self.categories[category]["count"] / entries_count
-            log_probabilities[category] = math.log(category_probability)
-
-            total_features = 0
-            for feature in self.categories[category]["features"]:
-                total_features += self.categories[category]["features"][feature]
-
-            for feature in features:
-                count_in_category = self.alpha
-
-                if feature in self.categories[category]["features"]:
-                    count_in_category += self.categories[category]["features"][feature]
-
-                likelihood = count_in_category / ( total_features + len(self.features_count.keys()) )
-                log_probabilities[category] += math.log(likelihood)
+        if self.entries_count == 0:
+            return
 
         max_probability = float("-inf")
         final_category = None
-        for category in log_probabilities:
-            if log_probabilities[category] >= max_probability:
-                max_probability = log_probabilities[category]
-                final_category = category
+
+        for category in self.categories:
+
+            apriori = self.categories[category]["count"] / self.entries_count
+            probability = math.log(apriori)
+
+            for feature in features:
+
+                likelihood = self.alpha
+                if feature in self.categories[category]["features"]:
+                    likelihood += self.categories[category]["features"][feature]
+
+                likelihood = likelihood / (self.categories[category]["features_count"] + self.alpha * len(self.unique_features))
+                probability += math.log(likelihood)
+
+                if(probability > max_probability):
+                    max_probability = probability
+                    final_category = category
+
 
         return final_category
 
@@ -98,7 +91,7 @@ class BayesBank:
     def classify(self, word, features):
 
         if not word in self.classifiers:
-            return None
+            return "non_toxic"
 
         return self.classifiers[word].classify(features)
 
@@ -111,8 +104,8 @@ class BayesBank:
             data_bank["classifiers"][word] = {
                 "alpha": self.classifiers[word].alpha,
                 "categories" : self.classifiers[word].categories,
-                "features_count" : self.classifiers[word].features_count,
-                "total_features": self.classifiers[word].total_features
+                "unique_features" : self.classifiers[word].unique_features,
+                "entries_count": self.classifiers[word].entries_count
             }
 
         file = open(data_path + "model.dat", 'w')

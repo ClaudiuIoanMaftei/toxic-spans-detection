@@ -12,6 +12,9 @@ class MachineLearning(AnalyzerStrategy):
         output = []
         preproc.lower()
         preproc.tokenize()
+
+        preproc.remove_stopwords()
+
         preproc.lemmatize()
         results = preproc.generate_results()
 
