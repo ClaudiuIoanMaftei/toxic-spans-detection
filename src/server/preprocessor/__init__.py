@@ -241,6 +241,7 @@ class PreProcessor:
         :return PreprocResults:
         """
         results=PreprocResults()
+        results.text = self.__corpus
         if self.__tokens is not None:
             results.data["tokens"]=self.__tokens
         if self.__lemmas is not None:
