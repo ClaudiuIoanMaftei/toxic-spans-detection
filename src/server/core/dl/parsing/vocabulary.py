@@ -29,8 +29,11 @@ class Vocabulary:
         return Vocabulary(string.split())
 
     @staticmethod
-    def from_csv(path):
-        df = pd.read_csv(path)
+    def from_csv(train_path):
+        try:
+            df = pd.read_csv(train_path)
+        except Exception as e:
+            df = pd.read_csv("../../../../" + train_path)
         nlp = spacy.load('en', disable=['ner', 'parser'])
         start_time = time()
 
@@ -90,7 +93,7 @@ class Vocabulary:
                     pass
             cnn_input.append(sentence_matrix)
 
-        return np.array(cnn_input), labels, 100, max_shape
+        return np.array(cnn_input), np.array(labels), 100, max_shape
 
     def get_tokens(self):
         return self._tokens
