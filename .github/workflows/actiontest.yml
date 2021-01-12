@@ -18,20 +18,31 @@ jobs:
     - name: Setup python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.x'
+        python-version: '3.7'
 
     - name: Install python depedencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        python -m spacy download en
 
     - name: NLTK download
       run: |
         python src/nltk_setup.py
 
+    - name: Unzip ML Model
+      uses: montudor/action-zip@v0.1.1
+      with:
+        args: unzip -qq src/server/core/ml/data/model.zip -d src/server/core/ml/data/
+
+    - name: Check Ml Model
+      run: |
+        ls src/server/core/ml/data
+
     - name: Testing
       if: always()
-      run: pytest
+      run: pytest --cov=. --cov-config=.coveragerc
+
 
 
 

@@ -20,9 +20,9 @@ class PreProcessor:
     __sentences=[]
 
     def __init__(self, corpus=""):
-        PreProcessor.__instance = self
-        PreProcessor.__corpus = corpus
-        PreProcessor.__tokens = None
+        self.__instance = self
+        self.__corpus = corpus
+        self.__tokens = None
 
     @staticmethod
     def get_instance():
