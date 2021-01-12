@@ -1,15 +1,15 @@
 from src.server.core import AnalyzerStrategy
-from src.server.core.dl.cnn.executors.default_execution import DefaultExecution
+from src.server.core.dl.cnn.executors.kerasnetworkhandler import KerasNetworkHandler
 from src.server.core.dl.parsing.vocabulary import Vocabulary
 
 
 class DeepLearning(AnalyzerStrategy):
-    _execution_strategy = None
+    network_handler = None
     dataset_vocabulary = None
     validation_vocabulary = None
 
     def __init__(self):
-        self._execution_strategy = DefaultExecution()
+        self.network_handler = KerasNetworkHandler()
         self.dataset_vocabulary, labels, word_size, sentence_size = Vocabulary.from_csv(
             "datasets/tsd_train.csv")
         self.validation_vocabulary, validation_labels, validation_word_size, validation_sentence_size = \
@@ -24,7 +24,10 @@ class DeepLearning(AnalyzerStrategy):
         })
 
     def analyze(self, preprocessed) -> [int]:
-        return None
+        try:
+            return self.network_handler.predict(preprocessed)
+        except Exception: # Silent failure untill network is ready
+            return None
 
     def _train(self, kwargs):
         """
@@ -32,7 +35,7 @@ class DeepLearning(AnalyzerStrategy):
         :param input_directory: directory with one or more CSV files used as input data
         :return: None
         """
-        self.strategy = DefaultExecution()
+        self.strategy = KerasNetworkHandler()
         self.strategy.init(**kwargs)
 
 

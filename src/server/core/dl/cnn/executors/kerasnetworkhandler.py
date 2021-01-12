@@ -1,19 +1,18 @@
-from .executionstrategy import ExecutionStrategy
+from .networkhandler import NetworkHandler
+from ...parsing.vocabulary import Vocabulary
 
-KERAS_ENABLE = True
+KERAS_ENABLE = False
 
 import numpy as np
 
 if KERAS_ENABLE:
     import keras
-    from keras.models import Sequential, Input, Model
-    from keras.layers import Dense, Dropout, Flatten
+    from keras.models import Sequential
+    from keras.layers import Dense, Flatten
     from keras.layers import Conv2D, MaxPooling2D
-    from keras.layers.normalization import BatchNormalization
-    from keras.layers.advanced_activations import LeakyReLU
 
 
-class DefaultExecution(ExecutionStrategy):
+class KerasNetworkHandler(NetworkHandler):
     """
     Implementation for the default execution chain. This is the one described by our reference document:
     https://arxiv.org/pdf/1802.09957.pdf
@@ -54,9 +53,14 @@ class DefaultExecution(ExecutionStrategy):
                           metrics=['accuracy'])
             model.summary()
 
-            trained = model.fit(train_input, labels, batch_size=batch_size, epochs=epochs, verbose=1,
+            model.fit(train_input, labels, batch_size=batch_size, epochs=epochs, verbose=1,
                                 validation_data=(validation, validation_labels))
 
-            return trained
+            self._model = model
+            model.save("dl_model.h5py")
+            return model
         else:
             return None
+
+    def transform(self, input_text):
+        return Vocabulary.w2v_model.wv.get_vector(input_text)
