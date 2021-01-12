@@ -1,6 +1,0 @@
-[run]
-omit =
-    src/server/core/ml/ml_trial.py
-    src/server/core/ml/bayes_train.py
-    src/nltk_setup.py
-

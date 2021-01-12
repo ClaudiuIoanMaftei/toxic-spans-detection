@@ -1,15 +1,11 @@
 from src.server.core.ml import MachineLearning
-from src.server.aop import AnalyzerAspect
 
 import pytest
 
+
 @pytest.fixture()
 def machine_learning():
-    aspect = AnalyzerAspect()
-    ml = MachineLearning()
-
-    aspect.apply(ml)
-    return ml
+    return MachineLearning()
 
 def test_1(machine_learning):
     assert machine_learning.analyze("") == []
@@ -25,4 +21,3 @@ def test_4(machine_learning):
 
 def test_5(machine_learning):
     assert machine_learning.analyze("You are such an idiot") == [16, 17, 18, 19, 20]
-

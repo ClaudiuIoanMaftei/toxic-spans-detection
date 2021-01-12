@@ -34,9 +34,6 @@ fnn_args = {'kern_x': 1, 'kern_y': 1, 'lf': 1.2, 'w': 2}
 
 class TestExecutionStrategy(ExecutionStrategy):
 
-    def __init__(self):
-        super().__init__()
-
     def init(self, **kwargs):
         self._execution_chain.entry_point(handler_mock, convolutional_args1)
 
