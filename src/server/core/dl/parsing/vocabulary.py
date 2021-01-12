@@ -12,7 +12,7 @@ from gensim.models import Word2Vec
 
 class Vocabulary:
     TEST_RUN = True
-    _w2v_model = None
+    w2v_model = None
 
     sentence_size = 0
     word_size = 0
@@ -29,8 +29,11 @@ class Vocabulary:
         return Vocabulary(string.split())
 
     @staticmethod
-    def from_csv(path):
-        df = pd.read_csv(path)
+    def from_csv(train_path):
+        try:
+            df = pd.read_csv(train_path)
+        except Exception as e:
+            df = pd.read_csv("../../../../" + train_path)
         nlp = spacy.load('en', disable=['ner', 'parser'])
         start_time = time()
 
@@ -78,7 +81,7 @@ class Vocabulary:
         w2v_model.init_sims(replace=True)
         print("W2V model initialized successfully.")
 
-        max_shape = max([len(x) for x in sentences])
+        max_shape = 200
 
         cnn_input = []
         for sent in sentences:
@@ -90,7 +93,10 @@ class Vocabulary:
                     pass
             cnn_input.append(sentence_matrix)
 
-        return np.array(cnn_input), labels, 100, max_shape
+        if Vocabulary.w2v_model is None:
+            Vocabulary.w2v_model = w2v_model
+
+        return np.array(cnn_input), np.array(labels), 100, max_shape
 
     def get_tokens(self):
         return self._tokens
@@ -99,7 +105,7 @@ class Vocabulary:
     def get_labels(input_text, clean_text):
         labels = []
 
-        max_shape = max([len(x.split()) for x in input_text['text']])
+        max_shape = 200
         for spans, text in zip(input_text['spans'], input_text['text']):
             spans = eval(spans)
             word_labels = np.zeros(max_shape)

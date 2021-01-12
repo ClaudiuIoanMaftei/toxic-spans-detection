@@ -50,8 +50,6 @@ class Bayes:
         log_probabilities = {}
         entries_count = 0
 
-        for i in range(0, len(features)):
-            features[i] = features[i]
 
         for category in self.categories:
             entries_count += self.categories[category]["count"]
@@ -59,7 +57,6 @@ class Bayes:
         for category in self.categories:
 
             category_probability = self.categories[category]["count"] / entries_count
-            #category_probability = 0.5
             log_probabilities[category] = math.log(category_probability)
 
             total_features = 0
@@ -70,10 +67,9 @@ class Bayes:
                 count_in_category = self.alpha
 
                 if feature in self.categories[category]["features"]:
-                    count_in_category = self.categories[category]["features"][feature] + self.alpha
+                    count_in_category += self.categories[category]["features"][feature]
 
                 likelihood = count_in_category / ( total_features + len(self.features_count.keys()) )
-
                 log_probabilities[category] += math.log(likelihood)
 
         max_probability = float("-inf")
@@ -84,6 +80,8 @@ class Bayes:
                 final_category = category
 
         return final_category
+
+
 
 class BayesBank:
 
@@ -118,8 +116,8 @@ class BayesBank:
             }
 
         file = open(data_path + "model.dat", 'w')
-        file.write(json.dumps(data_bank, indent=4))
-        #file.write(json.dumps(data_bank))
+        #file.write(json.dumps(data_bank, indent=4))
+        file.write(json.dumps(data_bank))
         file.close()
 
 
@@ -132,65 +130,6 @@ class BayesBank:
             self.classifiers[word] = Bayes(data_bank[word])
 
 
-def parse_data(file):
-    file = open(data_path + file, encoding="utf-8")
-    entities = []
-    csvreader = csv.reader(file, delimiter=',', quotechar='"')
-    for row in list(csvreader)[1:]:
-        spans = []
-        text = row[1]
-        spans_text = row[0][1:-1]
-        for number in spans_text.split(", "):
-            if number != '':
-                spans.append(int(number))
-        entities.append([spans, text])
-    return entities
-
-
-def semeval_train():
-    bb = BayesBank()
-
-    train_data = parse_data("tsd_train.csv")
-
-    for entry in train_data:
-        print(entry)
-        preproc = PreProcessor()
-        results = preproc.preprocess(entry[1])
-
-        tokens = results.data["tokens"]
-        lemmas = results.data["lemmas"]
-        uniq_lemmas = list(set(lemmas))
-        toxic_words = []
-
-        curr_word = ""
-        last_idx = 0
-        if len(entry[0]) > 0:
-            last_idx = entry[0][0]
-
-        for idx in entry[0]:
-            curr_word += entry[1][idx]
-            if idx > last_idx + 1:
-                toxic_words += curr_word.split(" ")
-                curr_word = ""
-            last_idx = idx
-        if curr_word != "":
-            toxic_words += curr_word.split(" ")
-
-        for idx in range(0, len(tokens)):
-            token = tokens[idx]
-            lemma = lemmas[idx]
-
-            lemmas_wo = list(uniq_lemmas)
-            lemmas_wo.remove(lemma)
-            for i in range(0, len(lemmas_wo)):
-                lemmas_wo[i] = lemmas[i]
-
-            if token in toxic_words:
-                bb.train(lemma, lemmas_wo, "toxic")
-            else:
-                bb.train(lemma, lemmas_wo, "non_toxic")
-
-    bb.serialize()
 
 def demo():
 
@@ -205,10 +144,4 @@ def demo():
     print(bb.classify("idiot", ["my", "little"]))
 
 if __name__ == "__main__":
-    if len(sys.argv)>1:
-
-        if sys.argv[1] == "demo":
-            demo()
-
-        elif sys.argv[1] == "train":
-            semeval_train()
+	demo()
