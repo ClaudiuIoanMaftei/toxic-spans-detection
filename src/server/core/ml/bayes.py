@@ -3,7 +3,7 @@ import math, sys, csv, json
 from src.server.preprocessor import PreProcessor
 
 # Global vars
-data_path = "src/server/core/ml/data/"
+data_path = "core/ml/data/"
 #####################################
 
 class Bayes:
