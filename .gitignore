@@ -12,3 +12,4 @@ trial.output
 trial_debug.txt
 spans-pred.txt
 spans-pred.zip
+train_debug.txt

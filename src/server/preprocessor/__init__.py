@@ -92,18 +92,27 @@ class PreProcessor:
         sentences=nltk.tokenize.sent_tokenize(self.__corpus)
         lemma_index=0
         for sentence in sentences:
-            tokens=nltk.word_tokenize(sentence)
+
             list=[]
             appearances={}
-            for token in tokens:
+            tokens=nltk.word_tokenize(sentence)
+            pos_list = nltk.pos_tag(tokens)
+
+            for token,pos in pos_list:
                 if token not in appearances:
                     char_index=sentence.find(token)
                 else:
                     char_index=sentence.find(token,appearances[token]+1)
 
+                pos = self.__pos_to_wordnet_pos(pos[0])
+                lemma = self.__lemmatizer.lemmatize(token, pos)
+                if nltk.corpus.wordnet.morphy(lemma) is not None:
+                    lemma = nltk.corpus.wordnet.morphy(lemma)
+
                 appearances[token]=char_index
-                list.append({"token":token,"lemma":self.__lemmas[lemma_index],"idx":char_index})
+                list.append({"token":token,"lemma":lemma,"idx":char_index})
                 lemma_index+=1
+
             self.__sentences.append(list)
 
     def lemmatize(self):
