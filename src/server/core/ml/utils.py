@@ -48,6 +48,16 @@ def parse_data(file):
         entities.append([spans, text])
     return entities
 
+def parse_test_data(file):
+    file = open(data_path + file, encoding="utf-8")
+    entities = []
+    csvreader = csv.reader(file, delimiter=',', quotechar='"')
+    for row in list(csvreader)[1:]:
+        text = row[0]
+        entities.append(text)
+
+    return entities
+
 
 # Parse aop log
 def parse_aop_log(file):
