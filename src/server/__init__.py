@@ -112,7 +112,10 @@ import json
 from src.server.core.ml import MachineLearning
 from src.server.core import Core
 from src.server.preprocessor import PreProcessor
+import nltk
 
+nltk.download('averaged_perceptron_tagger')
+nltk.download('wordnet')
 
 class STEP(Enum):
     PREPROCESSING = 0,
