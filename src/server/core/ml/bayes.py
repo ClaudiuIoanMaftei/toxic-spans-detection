@@ -67,9 +67,9 @@ class Bayes:
                 likelihood = likelihood / (self.categories[category]["features_count"] + self.alpha * len(self.unique_features))
                 probability += math.log(likelihood)
 
-                if(probability > max_probability):
-                    max_probability = probability
-                    final_category = category
+            if(probability > max_probability):
+                max_probability = probability
+                final_category = category
 
 
         return final_category

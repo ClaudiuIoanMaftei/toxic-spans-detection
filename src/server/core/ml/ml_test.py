@@ -1,7 +1,7 @@
 from src.server.core.ml import MachineLearning
 from src.server.aop import AnalyzerAspect
 from src.server.core.ml.utils import parse_test_data, spans_to_words, parse_aop_log
-import os
+import os, sys
 
 
 ####################
@@ -16,8 +16,12 @@ trial_output_file = "spans-pred.txt"
 test_data = parse_test_data(test_input_file)
 input_contor = 0
 
+feature_method = 0
+if len(sys.argv) > 1 and int(sys.argv[1]) >=0 and int(sys.argv[1]) <= 1:
+    feature_method = int(sys.argv[1])
+
 aa = AnalyzerAspect()
-ml = MachineLearning()
+ml = MachineLearning(feature_method)
 aa.apply(ml)
 
 ok    = 0
@@ -42,10 +46,13 @@ debug_file = open(trial_debug_file, "w", encoding="utf-8")
 output_file = open(trial_output_file, "w")
 ###########################################
 
+contor = 0
 for text in test_data:
 
     result = ml.analyze(text)
+    output_file.write(str(contor) + "\t")
     output_file.write(str(result) + '\n')
+
     input_contor += 1
 
     result_words  = spans_to_words(result,   text)
@@ -54,8 +61,9 @@ for text in test_data:
     debug_file.write("----------------\n")
     debug_file.write("result:  " + str(result)   + "\n")
     debug_file.write("----------------\n")
-    debug_file.write("result words: "   + str(result_words)   + "\n")
+    debug_file.write("result words: "   + str(result_words)   + "\n\n")
 
+    contor += 1
 
 #################
 # Closing files #

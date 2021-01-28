@@ -1,7 +1,7 @@
 from src.server.core.ml import MachineLearning
 from src.server.aop import AnalyzerAspect
 from src.server.core.ml.utils import parse_data, spans_to_words, parse_aop_log
-import os
+import os, sys
 
 
 ####################
@@ -17,8 +17,12 @@ gold_output_file  = "spans-gold.txt"
 trial_data = parse_data(trial_input_file)
 input_contor = 0
 
+feature_method = 0
+if len(sys.argv) > 1 and int(sys.argv[1]) >=0 and int(sys.argv[1]) <= 1:
+    feature_method = int(sys.argv[1])
+
 aa = AnalyzerAspect()
-ml = MachineLearning()
+ml = MachineLearning(feature_method)
 aa.apply(ml)
 
 ok    = 0
