@@ -1,47 +1,39 @@
-from src.server.core import SingletonException, AnalyzerStrategy
-from src.server.preprocessor import PreProcessor
+from src.server.core import AnalyzerStrategy
 from src.server.core.ml.bayes import BayesBank
+from src.server.core.ml.features import FeatureSelector
 
 class MachineLearning(AnalyzerStrategy):
-    def __init__(self):
+
+    def __init__(self, method=0):
         self.bayes = BayesBank()
         self.bayes.load()
+        self.feature_selector = FeatureSelector(method)
 
     def analyze(self, preproc) -> [int]:
 
         output = []
-        preproc.lower()
-        preproc.tokenize()
-        preproc.lemmatize()
-        results = preproc.generate_results()
+        feature_dic = self.feature_selector.features(preproc)
+        text = feature_dic["text"]
 
-        tokens = results.data["tokens"]
-        lemmas = results.data["lemmas"]
+        for token in feature_dic:
 
-        used_tokens = []
-
-        uniq_tokens = list(set(tokens))
-        uniq_lemmas = list(set(lemmas))
-
-        for idx in range(0, len(tokens)):
-            token = tokens[idx]
-            lemma = lemmas[idx]
-
-            if token in used_tokens:
+            if token == 'text':
                 continue
 
-            lemmas_wo = list(uniq_lemmas)
-            lemmas_wo.remove(lemma)
+            lemma = feature_dic[token]["lemma"]
+            feature_list = feature_dic[token]["features"]
 
-            if self.bayes.classify(lemma, lemmas_wo) == "toxic":
-                start = results.text.find(token)
+            if self.bayes.classify(lemma, feature_list) == "toxic":
+                start = text.find(token)
                 end = start + len(token)
                 for i in range(start, end):
-                    output.append(i)
+                    if i not in output:
+                        output.append(i)
 
-            used_tokens.append(token)
 
+        output.sort()
         return output
+
 
 if __name__ == "__main__":
     print("Machine Learning")

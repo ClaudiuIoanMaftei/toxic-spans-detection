@@ -32,13 +32,5 @@ def test_3(bayes):
     assert bayes.categories["category2"]["features"]["feature1"] == 1
     assert bayes.categories["category2"]["features"]["feature2"] == 1
 
-def test_4(bayes):
-    assert bayes.features_count["feature1"] == 2
-    assert bayes.features_count["feature2"] == 1
-
-def test_5(bayes_bank):
+def test_4(bayes_bank):
     assert list(bayes_bank.classifiers.keys()) == ["word1", "word2"]
-
-def test_6(bayes_bank):
-    assert list(bayes_bank.classifiers["word1"].features_count.keys()) == ["feature1"]
-    assert list(bayes_bank.classifiers["word2"].features_count.keys()) == ["feature1", "feature2"]

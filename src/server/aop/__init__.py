@@ -1,6 +1,5 @@
 from pytilities import aop
 from pytilities.aop import Aspect
-from pytilities.dictionary import FunctionMap
 from src.server.preprocessor import PreProcessor
 import time
 
@@ -40,4 +39,11 @@ class AnalyzerAspect(Aspect):
 
         # End time
         exectime = str(int(round(time.time()*1000)) - start_time)
-        print(object + "." + function + "(): " + exectime + " ms")
+
+        output = object + "." + function + "(): " + exectime + " ms"
+
+        file = open("aop.log", "a")
+        file.write(output + "\n")
+        file.close()
+
+        print(output)
